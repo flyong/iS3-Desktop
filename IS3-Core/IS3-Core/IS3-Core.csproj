@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4B8B162C-3658-4FCC-AB41-C0C85A7DB281}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>IS3.Core</RootNamespace>
+    <AssemblyName>IS3.Core</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>
+    </SccProjectName>
+    <SccLocalPath>
+    </SccLocalPath>
+    <SccAuxPath>
+    </SccAuxPath>
+    <SccProvider>
+    </SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>..\..\bin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\..\IS3-Desktop\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.AvalonDock, Version=2.1.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Core.cs" />
+    <Compile Include="Models\DGObject.cs" />
+    <Compile Include="Models\DGObjects.cs" />
+    <Compile Include="Models\DGObjectsCollection.cs" />
+    <Compile Include="Models\Domain.cs" />
+    <Compile Include="Models\EMap.cs" />
+    <Compile Include="ErrorReport.cs" />
+    <Compile Include="Extensions.cs" />
+    <Compile Include="Geometry\Geometry.cs" />
+    <Compile Include="Geometry\GeometryAlgorithms.cs" />
+    <Compile Include="Geometry\GeometryEngineInterface.cs" />
+    <Compile Include="Geometry\GeometryInterface.cs" />
+    <Compile Include="Geometry\GeomUtil.cs" />
+    <Compile Include="Graphics\RendererDef.cs" />
+    <Compile Include="Graphics\RendererInterface.cs" />
+    <Compile Include="Graphics\SymbolDef.cs" />
+    <Compile Include="ReflectionConvertHelper.cs" />
+    <Compile Include="Repository\IRepository.cs" />
+    <Compile Include="Models\Project.cs" />
+    <Compile Include="Repository\RepositoryForClient.cs" />
+    <Compile Include="Repository\RepositoryForDGObjects.cs" />
+    <Compile Include="Repository\RepositoryForDomain.cs" />
+    <Compile Include="Repository\RepositoryForProject.cs" />
+    <Compile Include="Service\iS3Cache.cs" />
+    <Compile Include="Service\ServiceConfig.cs" />
+    <Compile Include="Service\ServiceImporter.cs" />
+    <Compile Include="Service\IDataService.cs" />
+    <Compile Include="Service\IFileService.cs" />
+    <Compile Include="Service\IMapService.cs" />
+    <Compile Include="Service\IPrivilegeService.cs" />
+    <Compile Include="Service\IS3Service.cs" />
+    <Compile Include="LayerDef.cs" />
+    <Compile Include="Service\WebApiCaller.cs" />
+    <Compile Include="Shape\ShapeObject.cs" />
+    <Compile Include="Globals.cs" />
+    <Compile Include="Graphics\GraphicInterface.cs" />
+    <Compile Include="Graphics\GraphicsEngineInterface.cs" />
+    <Compile Include="Graphics\GraphicsUtil.cs" />
+    <Compile Include="Graphics\LayerInterface.cs" />
+    <Compile Include="Control\Mainframe.cs" />
+    <Compile Include="Runtime.cs" />
+    <Compile Include="Models\ProjectDefinition.cs" />
+    <Compile Include="Serialization\DbDataLoader.cs" />
+    <Compile Include="Serialization\DGObjectLoader.cs" />
+    <Compile Include="Serialization\IS3XmlSerializer.cs" />
+    <Compile Include="Graphics\SymbolInterface.cs" />
+    <Compile Include="Tools.cs" />
+    <Compile Include="Models\Tree.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIDesigns.cs" />
+    <Compile Include="Control\View.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

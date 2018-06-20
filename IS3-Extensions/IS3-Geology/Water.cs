@@ -64,9 +64,9 @@ namespace IS3.Geology
             :base(rawData)
         { }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadRiverWaters(objs);
             return success;
         }
@@ -93,10 +93,9 @@ namespace IS3.Geology
             : base(rawData)
         { }
 
-
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadPhreaticWaters(objs);
             return success;
         }
@@ -129,13 +128,12 @@ namespace IS3.Geology
             : base(rawData)
         { }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadConfinedWaters(objs);
             return success;
         }
-
     }
 
     public class WaterProperty : DGObject
@@ -164,10 +162,9 @@ namespace IS3.Geology
             : base(rawData)
         { }
 
-
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadWaterProperties(objs);
             return success;
         }

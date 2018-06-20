@@ -47,24 +47,26 @@ namespace IS3.Geology
         public double Base { get; set; }
         public double? Mileage { get; set; }
         public string Type { get; set; }
-        public List<BoreholeGeology> geologies { get; set; }
+        public List<BoreholeGeology> Geologies { get; set; }
+
         public Borehole()
         {
-            geologies = new List<BoreholeGeology>();
+            Geologies = new List<BoreholeGeology>();
         }
 
         public Borehole(DataRow rawData)
             :base(rawData)
         {
-            geologies = new List<BoreholeGeology>();
+            Geologies = new List<BoreholeGeology>();
         }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader = new GeologyDGObjectLoader(dbContext);
             bool success = loader.LoadBoreholes(objs);
             return success;
         }
+
         public override string ToString()
         {
             string str = base.ToString();
@@ -74,7 +76,7 @@ namespace IS3.Geology
                 Top, Base, Mileage, Type);
             str += str1;
 
-            foreach (var geo in geologies)
+            foreach (var geo in Geologies)
             {
                 str += geo.StratumID + ",";
             }
@@ -85,14 +87,16 @@ namespace IS3.Geology
         public override List<DataView> tableViews(IEnumerable<DGObject> objs)
         {
             List<DataView> dataViews = base.tableViews(objs);
-            //if (parent.rawDataSet.Tables.Count > 1)
-            //{
-            //    DataTable table = parent.rawDataSet.Tables[1];
-            //    string filter = idFilter(objs);
-            //    DataView view = new DataView(table, filter, "[BoreholeID]",
-            //        DataViewRowState.CurrentRows);
-            //    dataViews.Add(view);
-            //}
+
+            if (parent.rawDataSet.Tables.Count > 1)
+            {
+                DataTable table = parent.rawDataSet.Tables[1];
+                string filter = idFilter(objs);
+                DataView view = new DataView(table, filter, "[BoreholeID]",
+                    DataViewRowState.CurrentRows);
+                dataViews.Add(view);
+            }
+
             return dataViews;
         }
 
@@ -108,7 +112,7 @@ namespace IS3.Geology
             return sql;
         }
 
-        public override async System.Threading.Tasks.Task<List<FrameworkElement>> chartViews(
+        public override List<FrameworkElement> chartViews(
             IEnumerable<DGObject> objs, double width, double height)
         {
             List<FrameworkElement> charts = new List<FrameworkElement>();
@@ -116,12 +120,12 @@ namespace IS3.Geology
             List<Borehole> bhs = new List<Borehole>();
             foreach (Borehole bh in objs)
             {
-                if (bh != null && bh.geologies.Count > 0)
+                if (bh != null && bh.Geologies.Count > 0)
                     bhs.Add(bh);
             }
 
             Domain geologyDomain = Globals.project.getDomain(DomainType.Geology);
-            DGObjectsCollection strata =await geologyDomain.getObjects("Stratum");
+            DGObjectsCollection strata = geologyDomain.getObjects("Stratum");
 
             BoreholeCollectionView bhsView = new BoreholeCollectionView();
             bhsView.Name = "Geology";

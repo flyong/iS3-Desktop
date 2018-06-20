@@ -40,19 +40,20 @@
     <Reference Include="IS3.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\IS3-Core\IS3-Core\obj\Debug\IS3.Core.dll</HintPath>
-      <Private>False</Private>
     </Reference>
-    <Reference Include="IS3.Geology">
-      <HintPath>..\..\bin\extensions\IS3.Geology.dll</HintPath>
-      <Private>False</Private>
+    <Reference Include="IS3.Geology, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\IS3\bin\extensions\IS3.Geology.dll</HintPath>
     </Reference>
     <Reference Include="IS3.Monitoring">
-      <HintPath>..\..\bin\extensions\IS3.Monitoring.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\IS3\bin\extensions\IS3.Monitoring.dll</HintPath>
+    </Reference>
+    <Reference Include="IS3.ShieldTunnel, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\..\IS3\bin\extensions\IS3.ShieldTunnel.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -67,11 +68,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DemoTools.cs" />
-    <Compile Include="DomainTree.xaml.cs">
-      <DependentUpon>DomainTree.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MonitorDemoTool.xaml.cs">
-      <DependentUpon>MonitorDemoTool.xaml</DependentUpon>
+    <Compile Include="DemoWindow.xaml.cs">
+      <DependentUpon>DemoWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -97,11 +95,7 @@
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="DomainTree.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="MonitorDemoTool.xaml">
+    <Page Include="DemoWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

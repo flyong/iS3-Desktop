@@ -190,7 +190,7 @@ namespace IS3.Monitoring
             Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
             if (domainMon == null)
                 return false;
-            //DbContext dbContext = Globals.project.getDbContext();
+            DbContext dbContext = Globals.project.getDbContext();
 
             DGObjects objs = domainMon.objsContainer[name];
             ClearReadings(objs);
@@ -218,22 +218,15 @@ namespace IS3.Monitoring
         }
 
         // Reload 
-        //public bool ReloadObjs(DGObjects objs, DbContext dbContext,
-        //    string conditionSQL)
-        //{
-        //    MonitoringDGObjectLoader loader =
-        //        new MonitoringDGObjectLoader(dbContext);
-        //    bool success = loader.ReloadMonPoints(objs, conditionSQL);
-        //    return success;
-        //}
-        public bool ReloadObjs(DGObjects objs,
-    string conditionSQL)
+        public bool ReloadObjs(DGObjects objs, DbContext dbContext,
+            string conditionSQL)
         {
             MonitoringDGObjectLoader loader =
-                new MonitoringDGObjectLoader();
+                new MonitoringDGObjectLoader(dbContext);
             bool success = loader.ReloadMonPoints(objs, conditionSQL);
             return success;
         }
+
         public bool Reload(string name, string conditionSQL = null)
         {
             if (Globals.project == null)
@@ -241,11 +234,10 @@ namespace IS3.Monitoring
             Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
             if (domainMon == null)
                 return false;
-            //DbContext dbContext = Globals.project.getDbContext();
+            DbContext dbContext = Globals.project.getDbContext();
 
             DGObjects objs = domainMon.objsContainer[name];
-            //ReloadObjs(objs, dbContext, conditionSQL);
-            ReloadObjs(objs,  conditionSQL);
+            ReloadObjs(objs, dbContext, conditionSQL);
 
             return true;
         }
@@ -258,7 +250,7 @@ namespace IS3.Monitoring
             Domain domainMon = Globals.project.getDomain(DomainType.Monitoring);
             if (domainMon == null)
                 return;
-            //DbContext dbContext = Globals.project.getDbContext();
+            DbContext dbContext = Globals.project.getDbContext();
 
             foreach (var def in domainMon.objsDefinitions.Values)
             {
@@ -266,8 +258,7 @@ namespace IS3.Monitoring
                 {
                     DGObjects objs = domainMon.objsContainer[def.Name];
                     Globals.mainframe.output("\nLoading " + objs.definition.Name + "...");
-                    //ReloadObjs(objs, dbContext, conditionSQL);
-                    ReloadObjs(objs,  conditionSQL);
+                    ReloadObjs(objs, dbContext, conditionSQL);
                 }
             }
             Globals.mainframe.output("\nDone.\n");

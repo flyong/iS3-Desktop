@@ -26,24 +26,15 @@ namespace IS3.Desktop
 
             Closing += MainWindow_Closing;
 
-            //UserPreferences userPrefs = new UserPreferences();
-            //this.Height = userPrefs.WindowHeight;
-            //this.Width = userPrefs.WindowWidth;
-            //this.Top = userPrefs.WindowTop;
-            //this.Left = userPrefs.WindowLeft;
-            //this.WindowState = userPrefs.WindowState;
-
-            this.Height = 750;
-            this.Width = 1200;
-            this.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+            UserPreferences userPrefs = new UserPreferences();
+            this.Height = userPrefs.WindowHeight;
+            this.Width = userPrefs.WindowWidth;
+            this.Top = userPrefs.WindowTop;
+            this.Left = userPrefs.WindowLeft;
+            this.WindowState = userPrefs.WindowState;
 
             UserLoginPage userLoginPage = new UserLoginPage();
             pageTransitionControl.ShowPage(userLoginPage);
-
-            //ProjectListPage projectListPage = new ProjectListPage();
-            //pageTransitionControl.ShowPage(projectListPage);
-
-            //SwitchToMainFrame("NJ_MetroL10.xml");
         }
 
         void MainWindow_Closing(object sender,
@@ -60,17 +51,17 @@ namespace IS3.Desktop
             userPrefs.Save();
         }
 
-        public void SwitchToMainFrame(string projectID)
+        public void SwitchToMainFrame(string definitionFile)
         {
             pageTransitionControl.TransitionType =
-                WpfPageTransitions.PageTransitionType.SlideLeft;
-            MainFrame mainFrame = new MainFrame(projectID);
+                WpfPageTransitions.PageTransitionType.SlideLeftAndFade;
+            MainFrame mainFrame = new MainFrame(definitionFile);
             pageTransitionControl.ShowPage(mainFrame);
 
             App app = App.Current as App;
             app.MainFrame = mainFrame;
         }
-
+       
         public void SwitchToProjectListPage()
         {
             ProjectListPage projectListPage = new ProjectListPage();

@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Windows;
-using System.Collections.Generic;
+
 namespace IS3.Core
 {
     #region Copyright Notice
@@ -46,8 +46,6 @@ namespace IS3.Core
     //
     public static class Globals
     {
-        public static int userID { get; set; }
-        public static IService iS3Service { get; set; }
         public static Project project { get; set; }
         public static IMainFrame mainframe { get; set; }
         public static Application application { get; set; }

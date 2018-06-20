@@ -11,8 +11,8 @@ using System.IO;
 using IS3.Core;
 using IS3.Core.Geometry;
 using IS3.Core.Graphics;
-
 using UnityCore.MessageSys;
+
 namespace IS3.Desktop
 {
     //************************  Notice  **********************************
@@ -42,13 +42,12 @@ namespace IS3.Desktop
         public IEnumerable<IGraphicsLayer> layers { get { return null; } }
         public IGraphicsLayer drawingLayer { get { return null; } }
         public ISpatialReference spatialReference { get { return null; } }
-        public void initializeView() { }
+        public void initializeView(){}
 
-        public void onClose() { }
+        public void onClose(){}
 
-        public void highlightObject(DGObject obj, bool on = true)
-        {
-            if (obj == null || obj.parent == null || (obj.parent.definition.Has3D==false))
+        public void highlightObject(DGObject obj, bool on = true){
+            if (obj == null || obj.parent == null || (obj.parent.definition.Has3D == false))
                 return;
 
             SetObjSelectStateMessage message = new SetObjSelectStateMessage();
@@ -56,17 +55,15 @@ namespace IS3.Desktop
             message.iSSelected = on;
             ExcuteCommand(message);
         }
-        public void highlightObjects(IEnumerable<DGObject> objs, bool on = true)
-        {
+        public void highlightObjects(IEnumerable<DGObject> objs, bool on = true){
             if (objs == null)
                 return;
             foreach (DGObject obj in objs)
                 highlightObject(obj, on);
         }
         public void highlightObjects(IEnumerable<DGObject> objs,
-            string layerID, bool on = true)
-        { }
-        public void highlightAll(bool on = true) { }
+            string layerID, bool on = true){}
+        public void highlightAll(bool on = true){}
 
         public IMapPoint screenToLocation(System.Windows.Point screenPoint)
         { return null; }
@@ -78,7 +75,7 @@ namespace IS3.Desktop
 
         public void zoomTo(IGeometry geom) { }
 
-        public void addLayer(IGraphicsLayer layer) { }
+        public void addLayer(IGraphicsLayer layer){}
         public IGraphicsLayer getLayer(string layerID)
         {
             return null;
@@ -96,7 +93,7 @@ namespace IS3.Desktop
         }
 
         public Task<IGraphicsLayer> addShpLayer(LayerDef layerDef,
-            string shpFile, int start = 0, int maxFeatures = 0)
+            string shpFile, int start = 0, int maxFeatures = 0) 
         {
             return null;
         }
@@ -111,8 +108,7 @@ namespace IS3.Desktop
             Load3DScene();
         }
         public void objSelectionChangedListener(object sender,
-            ObjSelectionChangedEventArgs e)
-        {
+            ObjSelectionChangedEventArgs e) {
             if (sender == this)
                 return;
 
@@ -134,7 +130,6 @@ namespace IS3.Desktop
             drawingGraphicsChangedTrigger;
         #endregion
 
-
         U3DPlayerAxLib.U3DPlayerControl _u3dPlayerControl;
 
         public IS3View3D(UserControl parent,
@@ -151,11 +146,8 @@ namespace IS3.Desktop
             else
                 return true;
         }
-
-        int _count = 0;
         public EventHandler<IS3ToUnityArgs> sendMessageEventHandler;
         public EventHandler<UnityToIS3Args> receiveMessageHandler;
-
 
         public void Load3DScene()
         {
@@ -239,15 +231,6 @@ namespace IS3.Desktop
             catch { }
 
         }
-        public void ExcuteCommand(iS3UnityMessage message)
-        {
-            ExcuteCommand(MessageConverter.SerializeMessage(message));
-        }
-        public void ExcuteCommand(string command)
-        {
-            _u3dPlayerControl.SendMessage("Main Camera", "ReceiveMessage", command);
-        }
-
         private void ReceiveMessageListener(object sender, UnityToIS3Args args)
         {
             //switch (args.methodType)
@@ -259,8 +242,14 @@ namespace IS3.Desktop
             //    default: break;
             //}
         }
-
-
+        public void ExcuteCommand(iS3UnityMessage message)
+        {
+            ExcuteCommand(MessageConverter.SerializeMessage(message));
+        }
+        public void ExcuteCommand(string command)
+        {
+            _u3dPlayerControl.SendMessage("Main Camera", "ReceiveMessage", command);
+        }
         #region  receive function
         public void SelectObjByName(string message)
         {
@@ -321,7 +310,6 @@ namespace IS3.Desktop
 
         #endregion
     }
-
     #region 方法枚举
     public enum IS3ToUnityMethod
     {

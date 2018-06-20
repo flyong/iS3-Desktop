@@ -16,20 +16,14 @@ namespace IS3.Core.Serialization
         #region Member Variables
         // Default table name for attached documents.
         string _defDocTable = "Document";
-        //protected DbContext _dbContext;
+        protected DbContext _dbContext;
         ShapeObject nullShape;
         #endregion
 
         #region Constructor
-        //public DbDataLoader(DbContext dbContext)
-        //{
-        //    _dbContext = dbContext;
-        //    nullShape.Type = GeometryType.Null;
-        //    nullShape.Data = null;
-        //}
-        public DbDataLoader()
+        public DbDataLoader(DbContext dbContext)
         {
-            //_dbContext = dbContext;
+            _dbContext = dbContext;
             nullShape.Type = GeometryType.Null;
             nullShape.Data = null;
         }
@@ -176,9 +170,6 @@ namespace IS3.Core.Serialization
             else if (IsDbNull(row, colName))
                 return null;
             else
-                if (row[colName].ToString() == "")
-                return null;
-            else
                 return Convert.ToDouble(row[colName]);
         }
 
@@ -187,9 +178,6 @@ namespace IS3.Core.Serialization
             if (!IsDbColumnExist(row, colName))
                 return null;
             else if (IsDbNull(row, colName))
-                return null;
-            else
-            if (row[colName].ToString() == "")
                 return null;
             else
                 return Convert.ToInt32(row[colName]);
@@ -202,9 +190,6 @@ namespace IS3.Core.Serialization
             else if (IsDbNull(row, colName))
                 return null;
             else
-            if (row[colName].ToString() == "")
-                return null;
-            else
             {
                 return Convert.ToDateTime(row[colName]);
             }
@@ -215,9 +200,6 @@ namespace IS3.Core.Serialization
             if (!IsDbColumnExist(row, colName))
                 return null;
             else if (IsDbNull(row, colName))
-                return null;
-            else
-            if (row[colName].ToString() == "")
                 return null;
             else
             {
@@ -250,25 +232,177 @@ namespace IS3.Core.Serialization
         }
         #endregion
 
-        public virtual bool ReadRawData(
+        // Split '\n' seperated names into string array
+        public string[] SplitNames(string names)
+        {
+            if (names == "*")
+                return null;
+            else
+                return names.Split(new char[] { '\n','\t',',' });
+        }
+
+        // Convert names to SQL format, such as:
+        //      ([Name]='1' OR [Name]='2')
+        public string NamesToSQL(string[] names)
+        {
+            bool first = true;
+            string sql = "(";
+            foreach (string name in names)
+            {
+                if (first == false)
+                    sql += " OR ";
+                sql += "[Name]='" + name + "'";
+                first = false;
+            }
+            sql += ")";
+            return sql;
+        }
+
+        // Convert IDs to SQL, such as
+        //      WHERE ID in (1,2)
+        public string WhereSQL(List<int> IDs)
+        {
+            string sql = " WHERE ID in (";
+            for (int i = 0; i < IDs.Count; ++i)
+            {
+                sql += IDs[i].ToString();
+                if (i != IDs.Count - 1)
+                    sql += ",";
+            }
+            sql += ")";
+            return sql;
+        }
+
+        // Convert names and contitionSQL to SQL WHERE clause, such as
+        //      WHERE [LineNo]=1 AND ([Name]='1' OR [Name]='2')
+        public string WhereSQL(string[] names, string conditionSQL)
+        {
+            string where = "";
+            bool bWhereAdded = false;
+            if (conditionSQL != null && conditionSQL.Length > 0)
+            {
+                if (conditionSQL.Contains("WHERE") == false)
+                    where += " WHERE ";
+                where += conditionSQL;
+                bWhereAdded = true;
+            }
+
+            bool IsNameEmpty = false;
+            if (names == null)
+                IsNameEmpty = true;
+            else if (names.Length == 1 && names[0].Length == 0)
+                IsNameEmpty = true;
+
+            if (!IsNameEmpty)
+            {
+                if (bWhereAdded == false)
+                    where += " WHERE ";
+                else
+                    where += " AND ";
+                where += NamesToSQL(names);
+            }
+
+            return where;
+        }
+
+        public string OrderSQL(string orderSQL)
+        {
+            if (orderSQL != null && orderSQL.Length > 0)
+                return " ORDER BY " + orderSQL;
+            else
+                return "";
+        }
+
+        // Get record count of a table
+        int getRecordCount(string tableNameSQL)
+        {
+            DbDataReader reader =
+                _dbContext.ExecuteCommand("SELECT COUNT(1) FROM " + tableNameSQL);
+            if (reader.HasRows && reader.FieldCount > 0)
+            {
+                object obj = reader[0];
+                int count = Convert.ToInt32(obj);
+                return count;
+            }
+            else
+                return 0;
+        }
+
+        string getSelectCmd(string tableNameSQL, string condition)
+        {
+            string cmd = "";
+            int index = condition.IndexOf("@UniformSampling");
+            if (index >= 0)
+            {
+                // SQL: select * from [table] where [id] mod N = 0
+                int begin = condition.IndexOf("(", index);
+                int end = condition.IndexOf(")", begin);
+                string sampleStr = condition.Substring(begin + 1, end - begin - 1);
+                int sample = int.Parse(sampleStr);
+
+                int count = getRecordCount(tableNameSQL);
+                int interval = count / sample;
+                if (interval == 0)
+                    interval = 1;
+
+                cmd = "SELECT * FROM [" + tableNameSQL + "] WHERE [ID] MOD " + interval.ToString() + " = 0";
+                return cmd;
+            }
+
+            index = condition.IndexOf("@Last");
+            if (index >= 0)
+            {
+                // SQL: select * from (select top N * from [table] order by [time] desc)
+                int begin = condition.IndexOf("(", index);
+                int end = condition.IndexOf(")", begin);
+                string sampleStr = condition.Substring(begin + 1, end - begin - 1);
+                int sample = int.Parse(sampleStr);
+
+                cmd = "SELECT * FROM (SELECT TOP " + sample.ToString() + " * FROM " + tableNameSQL + " ORDER BY [TIME] DESC)";
+                return cmd;
+            }
+
+            cmd = "SELECT * FROM " + tableNameSQL + "";
+            cmd += WhereSQL(null, condition);
+            return cmd;
+        }
+
+        public virtual bool ReadRawData_Partial(
             DGObjects objs,
             string tableNameSQL,
             string orderSQL,
             string conditionSQL)
         {
-            //确认所在数据库
-            string databaseName = objs.definition.DatabaseName;
-            if (databaseName.Substring(databaseName.Length - 3, 3).ToUpper() == "MDB")
+            // tableNameSQL,orderSQL,conditionSQL may contain
+            // multiple table names speratored by comma
+            string[] names = tableNameSQL.Split(_separator);
+            string[] orders = null;
+            string[] conditions = null;
+            if (orderSQL != null)
+                orders = orderSQL.Split(_separator);
+            if (conditionSQL != null)
+                conditions = conditionSQL.Split(_separator);
+
+            for (int i = 0; i < names.Count(); ++i)
             {
-                Globals.iS3Service.SetNowDataService(DbServiceType.MDB);
-                Globals.iS3Service.DataService.initializeDataService(databaseName);
+                string tableName = _dbContext.TableNamePrefix + names[i];
+                string strCmd = "";
+
+                if (conditions != null && i < conditions.Count())
+                {
+                    string cond = conditions[i];
+                    strCmd = getSelectCmd(tableName, cond);
+                }
+                else
+                    strCmd = "SELECT * FROM " + tableName + "";
+
+                if (orders != null && i < orders.Count())
+                    strCmd += OrderSQL(orders[i]);
+
+                DbDataAdapter adapter = _dbContext.GetDbDataAdapter(strCmd);
+                adapter.Fill(objs.rawDataSet, tableName);
             }
-            else
-            {
-                Globals.iS3Service.SetNowDataService(DbServiceType.SQLSERVER);
-                Globals.iS3Service.DataService.initializeDataService(databaseName);
-            }
-            objs.rawDataSet = Globals.iS3Service.DataService.Query(tableNameSQL,orderSQL, conditionSQL);
+
             // Add a field 'IsSelected' to the first DataTable, so we can 
             // set and track the selection state of each row
             if (objs.rawDataSet.Tables != null
@@ -284,6 +418,76 @@ namespace IS3.Core.Serialization
                 {
                     row.SetField(column, false);
                 }
+
+            }
+
+            return true;
+        }
+
+
+        protected char[] _separator = new char[] { ',' };
+
+        // Summary:
+        //     Read tables in database into objs.RawDataSet, which have DataTable(s).
+        // Parameters:
+        //     objs -> objects
+        //     tableNameSQL -> table names, could have many table names together,
+        //                     see remarks below
+        //     orderSQL -> SQL order string: 'Order by orderSQL'
+        //     conditionSQL -> SQL condition string: 'Where conditionSQL'
+        // Remarks:
+        //     Objects can have multiple tables combined togther.
+        //     For example, borehole objects my have [Borehole], [BoreholeStrataInfo] tables.
+        //     To specifify multiple tables, just combine them together into
+        //     a string, such as "Boreholes,BoreholeStrataInfo". 
+        //     Similarly, orderSQL and conditionSQL may have mutliple items.
+        //
+        public virtual bool ReadRawData(
+            DGObjects objs,
+            string tableNameSQL,
+            string orderSQL,
+            string conditionSQL)
+        {
+            // tableNameSQL,orderSQL,conditionSQL may contain
+            // multiple table names speratored by comma
+            string[] names = tableNameSQL.Split(_separator);
+            string[] orders = null;
+            string[] conditions = null;
+            if (orderSQL != null)
+                orders = orderSQL.Split(_separator);
+            if (conditionSQL != null)
+                conditions = conditionSQL.Split(_separator);
+
+            for (int i = 0; i < names.Count(); ++i)
+            {
+                string tableName = _dbContext.TableNamePrefix + names[i];
+                string strCmd = "SELECT * FROM " + tableName + "";
+
+                if (conditions != null && i < conditions.Count())
+                    strCmd += WhereSQL(null, conditions[i]);
+                if (orders != null && i < orders.Count())
+                    strCmd += OrderSQL(orders[i]);
+
+                DbDataAdapter adapter = _dbContext.GetDbDataAdapter(strCmd);
+                adapter.Fill(objs.rawDataSet, tableName);
+            }
+
+            // Add a field 'IsSelected' to the first DataTable, so we can 
+            // set and track the selection state of each row
+            if (objs.rawDataSet.Tables != null 
+                && objs.rawDataSet.Tables.Count > 0)
+            {
+                DataTable dt = objs.rawDataSet.Tables[0];
+                DataColumn column = null;
+                if (dt.Columns.Contains("IsSelected"))
+                    column = dt.Columns["IsSelected"];
+                else
+                    column = dt.Columns.Add("IsSelected", typeof(bool));
+                foreach (DataRow row in dt.Rows)
+                {
+                    row.SetField(column, false);
+                }
+
             }
 
             return true;
@@ -340,6 +544,7 @@ namespace IS3.Core.Serialization
             return true;
         }
 
+
         public virtual bool ReadDGObjects(DGObjects objs, string tableNameSQL,
             List<int> IDs)
         {
@@ -353,54 +558,41 @@ namespace IS3.Core.Serialization
         //      2. 'DocName', 'Url', 'Name' and 'Category' columns
         //         must exists in 'Documents' table.
         //
-        //public virtual List<Attachment> ReadAttachments(string category,
-        //    string name)
-        //{
-        //    string docTable = _dbContext.TableNamePrefix + _defDocTable;
-        //    List<Attachment> attachments = new List<Attachment>();
-        //    string strCmd =
-        //        "SELECT [DocName],[Url] FROM [" +
-        //        docTable +
-        //        "] WHERE [Category]='"
-        //        + category + "' AND [Name]='" + name + "'";
-
-        //    try
-        //    {
-        //        if (_dbContext.IsTableExist("Documents"))
-        //        {
-        //            DbDataReader reader =
-        //                _dbContext.ExecuteCommand(strCmd);
-        //            while (reader.Read())
-        //            {
-        //                Attachment attach = new Attachment();
-        //                attach.Name = ReadString(reader, 0);
-        //                attach.Url = ReadString(reader, 1);
-        //                attachments.Add(attach);
-        //            }
-        //            reader.Close();
-        //        }
-        //    }
-        //    catch (DbException ex)
-        //    {
-        //        string str = ex.ToString();
-        //        ErrorReport.Report(str);
-        //    }
-
-        //    return attachments;
-        //}
-        // Convert IDs to SQL, such as
-        //      WHERE ID in (1,2)
-        public string WhereSQL(List<int> IDs)
+        public virtual List<Attachment> ReadAttachments(string category,
+            string name)
         {
-            string sql = " WHERE ID in (";
-            for (int i = 0; i < IDs.Count; ++i)
+            string docTable = _dbContext.TableNamePrefix + _defDocTable;
+            List<Attachment> attachments = new List<Attachment>();
+            string strCmd =
+                "SELECT [DocName],[Url] FROM [" +
+                docTable +
+                "] WHERE [Category]='"
+                + category + "' AND [Name]='" + name + "'";
+
+            try
             {
-                sql += IDs[i].ToString();
-                if (i != IDs.Count - 1)
-                    sql += ",";
+                if (_dbContext.IsTableExist("Documents"))
+                {
+                    DbDataReader reader =
+                        _dbContext.ExecuteCommand(strCmd);
+                    while (reader.Read())
+                    {
+                        Attachment attach = new Attachment();
+                        attach.Name = ReadString(reader, 0);
+                        attach.Url = ReadString(reader, 1);
+                        attachments.Add(attach);
+                    }
+                    reader.Close();
+                }
             }
-            sql += ")";
-            return sql;
+            catch (DbException ex)
+            {
+                string str = ex.ToString();
+                ErrorReport.Report(str);
+            }
+
+            return attachments;
         }
+
     }
 }

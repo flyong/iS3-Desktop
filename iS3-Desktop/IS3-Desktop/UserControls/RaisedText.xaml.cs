@@ -31,6 +31,9 @@ namespace IS3.Desktop.UserControls
 
 
         }
+
+
+
         #region Dependency Properties
 
         #region Text

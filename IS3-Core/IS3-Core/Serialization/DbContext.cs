@@ -15,7 +15,7 @@ namespace IS3.Core.Serialization
     {
         protected DbAdapter _adapter;
         protected DbConnection _connection;
-        protected bool _isOpened;                                                                                                                                                     
+        protected bool _isOpened;
 
         // option:
         //  0 - odbc connection

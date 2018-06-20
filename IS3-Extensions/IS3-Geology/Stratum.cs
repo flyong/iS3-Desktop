@@ -49,12 +49,13 @@ namespace IS3.Geology
             :base(rawData)
         { }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadStrata(objs);
             return success;
         }
+
         public override string ToString()
         {
             string str = base.ToString();

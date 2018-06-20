@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
+
 using IS3.Core;
-using System.Windows.Forms;
 
 namespace DemoTools
 {
@@ -40,8 +40,9 @@ namespace DemoTools
             return items;
         }
 
-        MonitorDemoTool demoWindow;
-        void CallMonitorDemoTool()
+        //新建分析工具窗口
+        DemoWindow demoWindow;
+        public void callDemoWindow()
         {
             if (demoWindow != null)
             {
@@ -49,36 +50,21 @@ namespace DemoTools
                 return;
             }
 
-            demoWindow = new MonitorDemoTool();
+            demoWindow = new DemoWindow();
             demoWindow.Closed += (o, args) =>
-            {
-                demoWindow = null;
-            };
+                {
+                    demoWindow = null;
+                };
             demoWindow.Show();
         }
-
-        void CallDomainTree()
-        {
-            DomainTree dt = new DomainTree();
-            dt.DataContext = Globals.project.domains.Values;
-            dt.Show();
-
-
-        }
-       
-
 
         //新建工具树
         public DemoTools()
         {
             items = new List<ToolTreeItem>();
 
-            ToolTreeItem item = new ToolTreeItem("Demo|Basic", "MonitorDemoTool", CallMonitorDemoTool);
+            ToolTreeItem item = new ToolTreeItem("Demo|Basic", "DemoTest", callDemoWindow);
             items.Add(item);
-
-            ToolTreeItem item1 = new ToolTreeItem("Demo|Basic", "DomainTree", CallDomainTree);
-            items.Add(item1);
-
         }
     }
 }

@@ -25,7 +25,6 @@ namespace IS3.Desktop
                 Math.Round(mapPt.X, 2), Math.Round(mapPt.Y, 2));
             IViewHolder viewHolder = _parent as IViewHolder;
             if (viewHolder != null)
-
                 viewHolder.setCoord(coord);
         }
 

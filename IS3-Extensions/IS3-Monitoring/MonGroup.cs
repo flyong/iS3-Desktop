@@ -65,11 +65,10 @@ namespace IS3.Monitoring
             monPntDict = new Dictionary<string, MonPoint>();
         }
 
-
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
             MonitoringDGObjectLoader loader =
-                new MonitoringDGObjectLoader();
+                new MonitoringDGObjectLoader(dbContext);
             bool success = loader.LoadMonGroups(objs);
             return success;
         }
@@ -142,7 +141,7 @@ namespace IS3.Monitoring
             return sql;
         }
 
-        public override List<FrameworkElement> chartViewsAsync(
+        public override List<FrameworkElement> chartViews(
             IEnumerable<DGObject> objs, double width, double height)
         {
             List<FrameworkElement> charts = new List<FrameworkElement>();

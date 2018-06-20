@@ -32,8 +32,8 @@ namespace IS3.Geology.UserControls
         public void RefreshView()
         {
             LayoutRoot.Children.Clear();
-            if (Borehole == null || Borehole.geologies == null
-                || Borehole.geologies.Count == 0)
+            if (Borehole == null || Borehole.Geologies == null
+                || Borehole.Geologies.Count == 0)
             {
                 IsEmpty = true;
                 return;
@@ -56,8 +56,8 @@ namespace IS3.Geology.UserControls
             Canvas.SetTop(tbName, -20);
             LayoutRoot.Children.Add(tbName);
 
-            BoreholeGeology bhGeo0 = Borehole.geologies[0];
-            foreach (BoreholeGeology bhGeo in Borehole.geologies)
+            BoreholeGeology bhGeo0 = Borehole.Geologies[0];
+            foreach (BoreholeGeology bhGeo in Borehole.Geologies)
             {
                 double top = (Borehole.Top - bhGeo.Top) * ScaleY;
                 double height = (bhGeo.Top - bhGeo.Base) * ScaleY;

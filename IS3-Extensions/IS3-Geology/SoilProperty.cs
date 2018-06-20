@@ -48,9 +48,9 @@ namespace IS3.Geology
         {
         }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadStratumSections(objs);
             return success;
         }
@@ -85,9 +85,9 @@ namespace IS3.Geology
             DynamicProp = new SoilDynamicProperty();
         }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
+            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader(dbContext);
             bool success = loader2.LoadSoilProperties(objs);
             return success;
         }

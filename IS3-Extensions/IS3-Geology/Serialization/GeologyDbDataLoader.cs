@@ -39,11 +39,10 @@ namespace IS3.Geology.Serialization
     #endregion
     public class GeologyDbDataLoader : DbDataLoader
     {
-
-        public GeologyDbDataLoader()
+        public GeologyDbDataLoader(DbContext dbContext)
+            : base(dbContext)
         { }
 
-        #region initial read
         // Read boreholes
         //
         public bool ReadBoreholes(DGObjects objs, string tableNameSQL,
@@ -52,7 +51,6 @@ namespace IS3.Geology.Serialization
             string conditionSQL = WhereSQL(objsIDs);
 
             return ReadBoreholes(objs, tableNameSQL, conditionSQL, null);
-            return true;
         }
 
         public bool ReadBoreholes(
@@ -63,7 +61,6 @@ namespace IS3.Geology.Serialization
         {
             try
             {
-                //ReadRawData(objs, tableNameSQL, orderSQL, conditionSQL);
                 _ReadBoreholes(objs, tableNameSQL, conditionSQL, 
                     orderSQL);
                 _ReadBoreholeGeologies2(objs);
@@ -105,9 +102,6 @@ namespace IS3.Geology.Serialization
             }
         }
 
-
-     
-
         void _ReadBoreholeGeologies(DGObjects objs)
         {
             // method1: maybe very slow because linq is slow.
@@ -140,12 +134,10 @@ namespace IS3.Geology.Serialization
                     bg.Base = ReadDouble(x, "ElevationOfStratumBottom").Value;
 
                     top = bg.Base;
-                    bh.geologies.Add(bg);
+                    bh.Geologies.Add(bg);
                 }
             }
         }
-
-
 
         void _ReadBoreholeGeologies2(DGObjects objs)
         {
@@ -206,7 +198,7 @@ namespace IS3.Geology.Serialization
                 {
                     x.Top = top;
                     top = x.Base;
-                    bh.geologies.Add(x);
+                    bh.Geologies.Add(x);
                 }
             }
         }
@@ -569,22 +561,6 @@ namespace IS3.Geology.Serialization
                 objs[wp.key] = wp;
             }
         }
-        #endregion
-       
 
-        // Convert IDs to SQL, such as
-        //      WHERE ID in (1,2)
-        public string WhereSQL(List<int> IDs)
-        {
-            string sql = " WHERE ID in (";
-            for (int i = 0; i < IDs.Count; ++i)
-            {
-                sql += IDs[i].ToString();
-                if (i != IDs.Count - 1)
-                    sql += ",";
-            }
-            sql += ")";
-            return sql;
-        }
     }
 }

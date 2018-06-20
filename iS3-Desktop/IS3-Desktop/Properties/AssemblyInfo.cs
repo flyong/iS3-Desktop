@@ -8,9 +8,9 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("IS3.Desktop")]
-[assembly: AssemblyDescription("iS3系统平台")]
+[assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("同济大学")]
+[assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("IS3.Desktop")]
 [assembly: AssemblyCopyright("Copyright ©  2014")]
 [assembly: AssemblyTrademark("")]

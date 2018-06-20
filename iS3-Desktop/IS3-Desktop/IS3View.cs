@@ -1052,9 +1052,7 @@ namespace IS3.Desktop
             }
         }
 
-        public void ExcuteCommand(string command)
-        {
-        }
+
     }
 
 

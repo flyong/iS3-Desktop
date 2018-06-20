@@ -45,13 +45,7 @@ namespace IS3.Python
             _engine = IronPython.Hosting.Python.CreateEngine();
             addIS3Path(_engine);
         }
-        public void addProjectPath(string ProjectPath)
-        {
-            ScriptScope scope = IronPython.Hosting.Python.GetSysModule(_engine);
-            dynamic path = scope.GetVariable("path");
 
-            path.append(ProjectPath);
-        }
         void addIS3Path(ScriptEngine engine)
         {
             ScriptScope scope = IronPython.Hosting.Python.GetSysModule(engine);
@@ -66,7 +60,6 @@ namespace IS3.Python
             path.append(rootPath);
             path.append(exePath);
             path.append(is3PyPath);
-            path.append("E");
         }
 
         public void loadPlugins(string path)

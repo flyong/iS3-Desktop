@@ -45,7 +45,6 @@ namespace IS3.Core
         public static string dataPath { get; set; }
         public static string tilePath { get; set; }
         public static string projPath { get; set; }
-        public static string servicePath { get; set; }
         public static string configurationPath { get; set; }
 
         static IGraphicEngine _graphicEngine;
@@ -65,7 +64,6 @@ namespace IS3.Core
             Runtime.rootPath = rootPath;
             Runtime.dataPath = dataPath;
             Runtime.tilePath = tilePath;
-            Runtime.servicePath = rootPath + "\\bin\\Servers";
             Runtime.configurationPath = rootPath + "\\IS3-Configuration\\DBconfig.xml";
         }
 

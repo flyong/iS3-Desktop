@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Configuration;
 using System.Data;
 using System.Linq;
@@ -17,7 +16,12 @@ using IS3.Core.Serialization;
 using IS3.ArcGIS.Graphics;
 using IS3.ArcGIS.Geometry;
 
-using IS3.Desktop.Properties;
+// For test
+using IS3.Core.Graphics;
+using IS3.Core.Geometry;
+
+
+
 namespace IS3.Desktop
 {
     /// <summary>
@@ -56,25 +60,29 @@ namespace IS3.Desktop
 
         void App_Startup(object sender, StartupEventArgs e)
         {
+            // Before initializing the ArcGIS Runtime first 
+            // set the ArcGIS Runtime license by providing the license string 
+            // obtained from the License Viewer tool.
+            //ArcGISRuntime.SetLicense("Place the License String in here");
+
+            // Initialize the ArcGIS Runtime before any components are created.
             try
             {
                 string exeLocation = Assembly.GetExecutingAssembly().Location;
                 string exePath = System.IO.Path.GetDirectoryName(exeLocation);
                 DirectoryInfo di = System.IO.Directory.GetParent(exePath);
-                string rootPath = di.FullName;
+                string rootPath = di.FullName+ "\\Output";
                 string dataPath = rootPath + "\\Data";
                 string tilePath = dataPath + "\\TPKs";
                 Runtime.rootPath = rootPath;
                 Runtime.dataPath = dataPath;
                 Runtime.tilePath = tilePath;
-                Runtime.servicePath = rootPath + "\\bin\\Servers";
-                Runtime.configurationPath = rootPath + "\\IS3-Configuration\\DBconfig.xml";
+                Runtime.configurationPath = rootPath + "\\config\\DBconfig.xml";
 
                 //ArcGISRuntime.Initialize();
                 Runtime.initializeEngines(_graphicEngine, _geometryEngine);
                 Globals.application = this;
                 Globals.mainthreadID = Thread.CurrentThread.ManagedThreadId;
-                Globals.iS3Service = ServiceImporter.LoadService(Runtime.servicePath);
                 //test();
             }
             catch (Exception ex)
@@ -90,6 +98,25 @@ namespace IS3.Desktop
         {
         }
 
+        void test()
+        {
+            IPointCollection pc = Runtime.geometryEngine.newPointCollection();
+            IMapPoint p1 = Runtime.geometryEngine.newMapPoint(0, 0);
+            IMapPoint p2 = Runtime.geometryEngine.newMapPoint(0, 100);
+            IMapPoint p3 = Runtime.geometryEngine.newMapPoint(100, 0);
+            pc.Add(p1);
+            pc.Add(p2);
+            pc.Add(p3);
+
+            IGraphicCollection gc = Runtime.graphicEngine.newGraphicCollection();
+            IGraphic g1 = Runtime.graphicEngine.newLine(p1, p2);
+            IGraphic g2 = Runtime.graphicEngine.newLine(p1, p3);
+            gc.Add(g1);
+            gc.Add(g2);
+
+            IEnvelope env = GraphicsUtil.GetGraphicsEnvelope(gc);
+
+        }
     }
 
 }

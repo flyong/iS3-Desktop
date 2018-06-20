@@ -30,7 +30,6 @@ namespace IS3.Core
 
     public enum ErrorReportTarget {DebugConsole, MessageBox, DelegateConsole};
 
-
     // Summary:
     //     Error report class
     // Remarks:

@@ -14,15 +14,11 @@ namespace IS3.Core.Serialization
     {
         protected DbDataLoader _dbLoader;
 
-        //public DGObjectLoader(DbContext dbContext)
-        //{
-        //    _dbLoader = new  DbDataLoader(dbContext);
-        //}
-        public DGObjectLoader()
+        public DGObjectLoader(DbContext dbContext)
         {
-            //_dbLoader = new DbDataLoader(dbContext);
-            _dbLoader = new DbDataLoader();
+            _dbLoader = new DbDataLoader(dbContext);
         }
+
         public bool Load(DGObjects objs)
         {
             DGObjectsDefinition def = objs.definition;

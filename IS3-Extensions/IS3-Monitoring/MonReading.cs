@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using IS3.Core;
 namespace IS3.Monitoring
 {
     #region Copyright Notice
@@ -32,7 +31,7 @@ namespace IS3.Monitoring
 
     // Summary:
     //     Monitoring Readering
-    public class MonReading:DGObject
+    public class MonReading
     {
         // Summary:
         //     monitoring point name

@@ -35,10 +35,11 @@ namespace IS3.Geology.Serialization
     {
         protected GeologyDbDataLoader _dbLoader;
 
-        public GeologyDGObjectLoader()
+        public GeologyDGObjectLoader(DbContext dbContext)
         {
-            _dbLoader = new GeologyDbDataLoader();
+            _dbLoader = new GeologyDbDataLoader(dbContext);
         }
+
         public bool LoadBoreholes(DGObjects objs)
         {
             DGObjectsDefinition def = objs.definition;

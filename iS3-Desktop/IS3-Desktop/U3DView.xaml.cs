@@ -65,11 +65,7 @@ namespace IS3.Desktop
             _view3D = new IS3View3D(this, u3dPlayerControl);
             _view3D.prj = prj;
             _view3D.eMap = eMap;
-            _view3D.sendMessageEventHandler += sendMessageEventListener;
         }
-        void sendMessageEventListener(object sender, IS3ToUnityArgs args)
-        {
-            u3dPlayerControl.SendMessage(args.obj, args.method.ToString(), args.para);
-        }
+
     }
 }

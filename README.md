@@ -14,5 +14,3 @@ The open source code can be downloaded from [iS3 project](https://github.com/iS3
 
 Finally, thanks AlphaSierraPapa and Joe Moorhouse for their open source code referred by iS3 in iS3-Python. Thanks Esri for Arcgis Runtime for Developer which provides gis runtime for iS3.
 
-# iS3-Desktop
-The client Application of iS3

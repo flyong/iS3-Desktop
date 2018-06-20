@@ -103,13 +103,14 @@ namespace IS3.Monitoring
             readingsDict = new Dictionary<string, List<MonReading>>();
         }
 
-        public override bool LoadObjs(DGObjects objs)
+        public override bool LoadObjs(DGObjects objs, DbContext dbContext)
         {
             MonitoringDGObjectLoader loader =
-                new MonitoringDGObjectLoader();
+                new MonitoringDGObjectLoader(dbContext);
             bool success = loader.LoadMonPoints(objs);
             return success;
         }
+
         public override string ToString()
         {
             string str = base.ToString();
@@ -125,11 +126,10 @@ namespace IS3.Monitoring
             return str;
         }
 
-        private bool isDetail = false;
         public override List<DataView> tableViews(IEnumerable<DGObject> objs)
         {
-            
             List<DataView> dataViews = base.tableViews(objs);
+
             for (int i = 1; i < parent.rawDataSet.Tables.Count; ++i)
             {
                 DataTable table = parent.rawDataSet.Tables[i];
@@ -154,7 +154,7 @@ namespace IS3.Monitoring
             return sql;
         }
 
-        public override List<FrameworkElement> chartViewsAsync(
+        public override List<FrameworkElement> chartViews(
             IEnumerable<DGObject> objs, double width, double height)
         {
             List<FrameworkElement> charts = new List<FrameworkElement>();

@@ -38,10 +38,11 @@ namespace IS3.Monitoring.Serialization
     {
         protected MonitoringDbDataLoader _dbLoader;
 
-        public MonitoringDGObjectLoader()
+        public MonitoringDGObjectLoader(DbContext dbContext)
         {
-            _dbLoader = new MonitoringDbDataLoader();
+            _dbLoader = new MonitoringDbDataLoader(dbContext);
         }
+
         public bool LoadMonPoints(DGObjects objs)
         {
             DGObjectsDefinition def = objs.definition;

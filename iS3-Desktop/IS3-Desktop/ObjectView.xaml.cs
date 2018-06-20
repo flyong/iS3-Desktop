@@ -60,7 +60,7 @@ namespace IS3.Desktop
         void ObjectView_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             if (_saved != null)
-                refreshChartViewAsync(_saved);
+                refreshChartView(_saved);
         }
         // see IS3DataGrid for more details
         private void dataGrid0_AutoGeneratingColumn(object sender,
@@ -167,9 +167,9 @@ namespace IS3.Desktop
             window.Owner = App.Current.MainWindow;
             window.WindowState = WindowState.Maximized;
             window.Title = "Monitoring data chart: " + names;
-            window.SizeChanged += async (o, args) =>
+            window.SizeChanged +=  (o, args) =>
                 {
-                    List<FrameworkElement> chartViews =await firstObj.chartViews(objs,
+                    List<FrameworkElement> chartViews = firstObj.chartViews(objs,
                         window.ActualWidth, window.ActualHeight - 40.0);
 
                     TabControl tabControl = new TabControl();
@@ -247,18 +247,10 @@ namespace IS3.Desktop
             }
 
             _saved = selectedObjsDict;
-            //foreach (string key in selectedObjsDict.Keys)
-            //{
-            //    IEnumerable<DGObject> objs = selectedObjsDict[key];
-            //    if (objs.Count() > 0)
-            //    {
-            //        objs.First().parent.LoadObjs_Detail(objs.ToList());
-            //    }
-            //}
             // 
             refreshTextView(selectedObjsDict);
-           // refreshTableView(selectedObjsDict);
-            refreshChartViewAsync(selectedObjsDict);
+            refreshTableView(selectedObjsDict);
+            refreshChartView(selectedObjsDict);
         }
 
         void refreshTextView(
@@ -366,7 +358,7 @@ namespace IS3.Desktop
                 tableViewHolder.SelectedIndex = 0;
         }
 
-        async Task refreshChartViewAsync(
+        void refreshChartView(
             Dictionary<string, IEnumerable<DGObject>> selectedObjsDict)
         {
             // If more than 1 type objects are selected, can't display it.
@@ -397,7 +389,7 @@ namespace IS3.Desktop
                 return;
 
             DGObject obj = objs.First();
-            List<FrameworkElement> chartViews =await obj.chartViews(objs,
+            List<FrameworkElement> chartViews = obj.chartViews(objs,
                 objectViewGrid.ActualWidth, objectViewGrid.ActualHeight - 40.0);
             if (chartViews == null)
             {

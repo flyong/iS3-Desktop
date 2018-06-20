@@ -39,9 +39,10 @@ namespace IS3.Monitoring.Serialization
     //    Monitoring Db data loader
     class MonitoringDbDataLoader : DbDataLoader
     {
-
-        public MonitoringDbDataLoader()
+        public MonitoringDbDataLoader(DbContext dbContext)
+            : base(dbContext)
         { }
+
         // Summary:
         //     Read monitoring points
         public bool ReadMonPoints(DGObjects objs, string tableNameSQL,
@@ -51,20 +52,6 @@ namespace IS3.Monitoring.Serialization
 
             return ReadMonPoints(objs, tableNameSQL, conditionSQL, null);
         }
-        // Convert IDs to SQL, such as
-        //      WHERE ID in (1,2)
-        public string WhereSQL(List<int> IDs)
-        {
-            string sql = " WHERE ID in (";
-            for (int i = 0; i < IDs.Count; ++i)
-            {
-                sql += IDs[i].ToString();
-                if (i != IDs.Count - 1)
-                    sql += ",";
-            }
-            sql += ")";
-            return sql;
-        }
 
         // Summary:
         //    Read monitoring points from the specified tables, using condition and order
@@ -73,7 +60,7 @@ namespace IS3.Monitoring.Serialization
         {
             try
             {
-                ReadRawData(objs, tableNameSQL, orderSQL, conditionSQL);
+                ReadRawData_Partial(objs, tableNameSQL, orderSQL, conditionSQL);
                 _ReadMonPoints(objs, tableNameSQL, conditionSQL, orderSQL);
                 _ReadMonReadings(objs);
             }
@@ -95,7 +82,7 @@ namespace IS3.Monitoring.Serialization
             try
             {
                 // read raw data ingoring condition
-                ReadRawData(objs, tableNameSQL, orderSQL, conditionSQL);
+                ReadRawData_Partial(objs, tableNameSQL, orderSQL, conditionSQL);
 
                 // fill readings (note: objs are already exist)
                 _ReadMonReadings(objs);
@@ -178,7 +165,7 @@ namespace IS3.Monitoring.Serialization
                     {
                         reading.value = Double.Parse(reading.reading);
                     }
-                    catch (Exception)
+                    catch(Exception)
                     {
                         // do nothing
                     }
@@ -229,7 +216,7 @@ namespace IS3.Monitoring.Serialization
             }
             return true;
         }
-        public char[] _separator = new char[] { ',' };
+
         void _ReadMonGroups(DGObjects objs, string tableNameSQL,
             string conditionSQL, string orderSQL)
         {
@@ -254,6 +241,6 @@ namespace IS3.Monitoring.Serialization
                 objs[obj.key] = obj;
             }
         }
-       
     }
+
 }

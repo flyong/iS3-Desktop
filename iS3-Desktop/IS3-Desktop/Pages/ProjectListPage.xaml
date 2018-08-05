@@ -7,6 +7,7 @@
              xmlns:IS3Controls="clr-namespace:IS3.Desktop.UserControls"
              xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
              xmlns:xcad="http://schemas.xceed.com/wpf/xaml/avalondock"
+            
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <Grid x:Name="LayoutRoot">
@@ -90,14 +91,14 @@
                                                               Data="M-1803.39,-939.073C-1813.86,-939.073 -1822.34,-930.589 -1822.34,-920.126 -1822.34,-916.45 -1821.29,-913.022 -1819.48,-910.119L-1811.54,-893.476 -1803.39,-876.405 -1795.25,-893.476 -1787.31,-910.115C-1785.49,-913.021 -1784.45,-916.449 -1784.45,-920.126 -1784.45,-930.589 -1792.93,-939.073 -1803.39,-939.073 M-1803.39,-909.656C-1808.8,-909.656 -1813.18,-914.039 -1813.18,-919.448 -1813.18,-924.854 -1808.8,-929.24 -1803.39,-929.24 -1797.98,-929.24 -1793.6,-924.854 -1793.6,-919.448 -1793.6,-914.039 -1797.98,-909.656 -1803.39,-909.656"
                                                               Stretch="Uniform" Fill="#000000" Width="20" Height="20" Margin="3"/>
                                                         <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                            <TextBlock  FontSize="15" Text="{Binding ID}" Margin="5,2,0,2"><Run Text=":"/></TextBlock>
-                                                            <TextBlock  FontSize="10" Text=" 工程简介:" Margin="3,2,0,2"><Run Text="{Binding Description}"/></TextBlock>
+                                                            <TextBlock  FontSize="15" Text="{Binding CODE}" Margin="5,2,0,2"><Run Text=":"/></TextBlock>
+                                                            <TextBlock  FontSize="10" Text=" 工程简介:" Margin="3,2,0,2"><Run Text="{Binding ProjectTitle}"/></TextBlock>
                                                         </StackPanel>
                                                     </Grid>
                                                 </DataTemplate>
                                             </ListBox.ItemTemplate>
                                         </ListBox>
-                                            <Button Name="AddProject" Grid.Row="1" Height="20" Click="AddProject_OnClick">添加工程</Button>
+                                            <Button Name="AddProject" Grid.Row="1" Height="20" Click="AddProject_OnClick" Visibility="Hidden">添加工程</Button>
                                             <Popup StaysOpen="False" Name="AddPop" AllowsTransparency="True" Height="150"  PopupAnimation="Slide" PlacementTarget="{Binding ElementName=AddProject}" Placement="Top">
                                                 <Grid Background="Gray" >
                                                     <Grid.ColumnDefinitions>

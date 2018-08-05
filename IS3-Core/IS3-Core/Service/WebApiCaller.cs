@@ -43,33 +43,45 @@ namespace IS3.Core.Service
         }
         
 
-        /// <summary>  
+        /// <summary>   
         /// GET Method  
         /// </summary>  
         /// <returns></returns>  
         public static string HttpGet(string url)
         {
-            //缓存判断
-            if (iS3Cache.checkIfExist(url))
+            if (ServiceConfig.NeedCache)
             {
-                if (iS3Cache.CheckIfLastet(url))
+                //缓存判断
+                if (iS3Cache.checkIfExist(url))
                 {
-                    return iS3Cache.GetFromCache(url);
+                    if (iS3Cache.CheckIfLastet(url))
+                    {
+                        return iS3Cache.GetFromCache(url);
+                    }
                 }
             }
-            HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
-            myRequest.Method = "GET";
-            myRequest.Timeout = 4000;
-            HttpWebResponse myResponse = null;
+            try
+            {
+                HttpWebRequest myRequest = (HttpWebRequest)WebRequest.Create(url);
+                myRequest.Method = "GET";
+                myRequest.Timeout = 4000;
+                HttpWebResponse myResponse = null;
 
-            myResponse = (HttpWebResponse)myRequest.GetResponse();
-            StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
-            string content = reader.ReadToEnd();
+                myResponse = (HttpWebResponse)myRequest.GetResponse();
+                StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
+                string content = reader.ReadToEnd();
 
-            //缓存保存
-            iS3Cache.SaveToCache(url, content);
-
-            return content;
+                if (ServiceConfig.NeedCache)
+                {
+                    //缓存保存
+                    iS3Cache.SaveToCache(url, content);
+                }
+                return content;
+            }
+            catch (Exception ex)
+            {
+                return "";
+            }
 
             //异常请求  
             //catch (WebException e)
@@ -85,60 +97,6 @@ namespace IS3.Core.Service
             //        }
             //    }
             //}
-        }
-        static void auth()
-        {
-            string result = "";
-
-            string serviceAddress = ServiceConfig.TokenURL;
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceAddress);
-
-            request.Method = "POST";
-            request.ContentType = "application/x-www-form-urlencoded";
-            string strContent = "grant_type=password&password=lxd&username=linxiaodong";
-            byte[] data = Encoding.UTF8.GetBytes(strContent);
-            request.ContentLength = data.Length;
-
-            using (Stream reqStream = request.GetRequestStream())
-            {
-                reqStream.Write(data, 0, data.Length);
-                reqStream.Close();
-            }
-
-            HttpWebResponse resp = (HttpWebResponse)request.GetResponse();
-            Stream stream = resp.GetResponseStream();
-
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-            {
-                result = reader.ReadToEnd();
-            }
-        }
-
-        static void post()
-        {
-            string result = "";
-
-            string serviceAddress = "http://47.98.187.240:8011/api/project/info/LXD";
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create(serviceAddress);
-
-            request.Method = "PUT";
-            request.ContentType = "application/json";
-            request.Headers.Add("Authorization", "Bearer ty0LpueVaDdsRv_GpZ9zkLaEr9oMGCenZN63I_xKlo6FBjbyYiPSN8WkIJKYePXOAMrd3Y-CLUlJb-jDOEcKYGhYQlDQuGJ1vtYCXZ_cos_aUhlFI3vzJYaikT71fBMxrPdWj5O1oUhos7g2KAkU4uV5uBXty-TEIm6iQkgrvnX2lsaUyj_qih8u_aDd7nNxMADzTrR_3x7Xzlrw8IQrGg");
-
-            string strContent = @"{""ProjectName"": ""test""}";
-
-            using (StreamWriter dataStream = new StreamWriter(request.GetRequestStream()))
-            {
-                dataStream.Write(strContent);
-                dataStream.Close();
-            }
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            Stream stream = response.GetResponseStream();
-
-            using (StreamReader reader = new StreamReader(stream, Encoding.UTF8))
-            {
-                result = reader.ReadToEnd();
-            }
         }
     }
 }

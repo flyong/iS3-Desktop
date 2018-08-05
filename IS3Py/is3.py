@@ -162,12 +162,12 @@ def addGdbLayer(viewWrapper, layerDef, gdbFile = None, start = 0, maxFeatures = 
     else:
         print('addGdbFileELayer succeeded: ' + layerDef.Name)
 
-    objs = prj.findObjects(layerDef.Name)
-    if (objs == None):
-        print('Layer ' + layerDef.Name + ' has no corresponding objects in the project.')
-    else:
-        count = layerWrapper.layer.syncObjects(objs)
-        print('Sync with ' + str(count) + ' objects for layer ' + layerDef.Name)
+    ##objs = prj.findObjects(layerDef.Name)
+    ##if (objs == None):
+    ##    print('Layer ' + layerDef.Name + ' has no corresponding objects in the project.')
+    ##else:
+    ##    count = layerWrapper.layer.syncObjects(objs)
+    ##    print('Sync with ' + str(count) + ' objects for layer ' + layerDef.Name)
 
     return layerWrapper
 

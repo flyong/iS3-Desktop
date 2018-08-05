@@ -24,6 +24,7 @@ using System.Threading.Tasks;
 using Esri.ArcGISRuntime.Controls;
 using System.Data.SqlClient;
 using System.Xml.Linq;
+using IS3.Core.Repository;
 
 namespace IS3.Desktop
 {
@@ -89,10 +90,6 @@ namespace IS3.Desktop
         void initialContextMenu()
         {
             aMenu = new ContextMenu();
-            //MenuItem ConfigurationMenu = new MenuItem();
-            //ConfigurationMenu.Header = "配置项目";
-            //ConfigurationMenu.Click += ConfigurationMenu_Click;
-            //aMenu.Items.Add(ConfigurationMenu);
             MenuItem ViewMenu = new MenuItem();
             ViewMenu.Header = "进入项目";
             ViewMenu.Click += ViewMenu_Click;
@@ -106,6 +103,7 @@ namespace IS3.Desktop
         {
             MyMapView.ContextMenu = null;
         }
+        //右键项目，进入项目详情页
         private void ViewMenu_Click(object sender, RoutedEventArgs e)
         {
             string projectID = _selectGraphic.Attributes["ID"] as string;
@@ -148,11 +146,11 @@ namespace IS3.Desktop
 
             try
             {
-            
+
                 _isHitTesting = true;
 
                 Point screenPoint = e.GetPosition(MyMapView);
-                
+
                 //设置鼠标当前坐标
                 MapPoint mapPoint = screenPoint2MapPoint(screenPoint);
                 if (mapPoint == null)
@@ -216,7 +214,7 @@ namespace IS3.Desktop
             try
             {
                 AddContextMenu();
-               // MyMapView.ContextMenu.Visibility = Visibility.Collapsed;
+                // MyMapView.ContextMenu.Visibility = Visibility.Collapsed;
 
                 _isHitTesting = true;
 
@@ -253,21 +251,25 @@ namespace IS3.Desktop
         {
             if (Projects == null)
             {
-                LoadProjectList();
-                // switch to the default project
-                if (Projects != null)
+                LoadData();
+            }
+        }
+        public async Task LoadData()
+        {
+            await LoadProjectList();
+            // switch to the default project
+            if (Projects != null)
+            {
+                ProjectLocation loc =
+                    Projects.Locations.ToList().Find(i => i.Default == true);
+                if ((loc != null))
                 {
-                    ProjectLocation loc =
-                        Projects.Locations.ToList().Find(i => i.Default == true);
-                    if ((loc != null))
-                    {
 
-                        App app = Application.Current as App;
-                        IS3MainWindow mw = (IS3MainWindow)app.MainWindow;
-                        mw.SwitchToMainFrame(loc.ID);
-                    }
-                    projectBox.ItemsSource = Projects.Locations;
+                    App app = Application.Current as App;
+                    IS3MainWindow mw = (IS3MainWindow)app.MainWindow;
+                    mw.SwitchToMainFrame(loc.CODE);
                 }
+                projectBox.ItemsSource = Projects.Locations;
             }
             if (Projects != null)
             {
@@ -278,14 +280,17 @@ namespace IS3.Desktop
                 //Map.ZoomTo(ProjectExtent);
             }
         }
-        public void LoadProjectList()
+        public async Task LoadProjectList()
         {
             if (Projects != null)
                 return;
 
             try
             {
-                Projects = Globals.iS3Service.PrivilegeService.QueryAccessableProject(Globals.userID);
+                Projects = new ProjectList()
+                {
+                    Locations = await new RepositoryForProject().RetrieveProjectList(),
+                };
             }
             catch (Exception error)
             {
@@ -302,13 +307,12 @@ namespace IS3.Desktop
             {
                 Graphic g = new Graphic()
                 {
-                    Geometry = new MapPoint(loc.X, loc.Y),
+                    Geometry = new MapPoint(double.Parse(loc.X), double.Parse(loc.Y)),
                     Symbol = _MarkerSymbol_Normal,
-                    //Symbol = _selectMarkerSymbol,
                 };
-                g.Attributes["ID"] = loc.ID;
-                g.Attributes["DefinitionFile"] = loc.DefinitionFile;
-                g.Attributes["Description"] = loc.Description;
+                g.Attributes["ID"] = loc.CODE;
+                g.Attributes["DefinitionFile"] = loc.ProjectTitle;
+                g.Attributes["Description"] = loc.ProjectTitle;
 
                 gLayer.Graphics.Add(g);
             }
@@ -336,8 +340,6 @@ namespace IS3.Desktop
             }
             return mapPoint;
         }
-        #endregion
-
         private void projectBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             string selectID = Projects.Locations[projectBox.SelectedIndex].ID;
@@ -354,9 +356,9 @@ namespace IS3.Desktop
             }
 
         }
+        #endregion
 
-       
-
+        #region 添加工程操作 
         private void AddProject_OnClick(object sender, RoutedEventArgs e)
         {
             AddPop.Width = AddProject.ActualWidth;
@@ -399,8 +401,8 @@ namespace IS3.Desktop
                         DefinitionFile = "",
                         Description = ProjectDes.Text,
                         ID = ProjectID.Text,
-                        X = (newg.Geometry as MapPoint).X,
-                        Y = (newg.Geometry as MapPoint).Y
+                        X = (newg.Geometry as MapPoint).X.ToString(),
+                        Y = ((newg.Geometry as MapPoint).Y).ToString()
                     });
                     sqlCommand = new SqlCommand(
                         "INSERT [dbo].[CF_Privilege] ([PrivilegeID], [PrivilegeMaster], [PrivilegeMasterValue], [PrivilegeAccess], [PrivilegeAccessValue], [PrivilegeOperation]) VALUES (" + (Projects.Locations.Count) + ", N'User', N'1', N'ProjectListInfo', N'" +
@@ -445,5 +447,6 @@ namespace IS3.Desktop
             { }
 
         }
+        #endregion
     }
 }

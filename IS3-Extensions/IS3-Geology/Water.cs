@@ -6,8 +6,8 @@ using System.Web;
 using System.Data;
 
 using IS3.Core;
-using IS3.Core.Serialization;
-using IS3.Geology.Serialization;
+//using IS3.Core.Serialization;
+//using IS3.Geology.Serialization;
 
 namespace IS3.Geology
 {
@@ -38,10 +38,6 @@ namespace IS3.Geology
     {
         public Water()
         { }
-
-        public Water(DataRow rawData)
-            :base(rawData)
-        { }
     }
 
     public class RiverWater : Water
@@ -60,16 +56,6 @@ namespace IS3.Geology
         public RiverWater()
         { }
 
-        public RiverWater(DataRow rawData)
-            :base(rawData)
-        { }
-
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadRiverWaters(objs);
-            return success;
-        }
     }
 
     public class PhreaticWater : Water
@@ -88,18 +74,6 @@ namespace IS3.Geology
 
         public PhreaticWater()
         { }
-
-        public PhreaticWater(DataRow rawData)
-            : base(rawData)
-        { }
-
-
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadPhreaticWaters(objs);
-            return success;
-        }
     }
 
     public class ConfinedWater : Water
@@ -125,16 +99,6 @@ namespace IS3.Geology
         public ConfinedWater()
         { }
 
-        public ConfinedWater(DataRow rawData)
-            : base(rawData)
-        { }
-
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadConfinedWaters(objs);
-            return success;
-        }
 
     }
 
@@ -160,16 +124,5 @@ namespace IS3.Geology
         public WaterProperty()
         { }
 
-        public WaterProperty(DataRow rawData)
-            : base(rawData)
-        { }
-
-
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadWaterProperties(objs);
-            return success;
-        }
     }
 }

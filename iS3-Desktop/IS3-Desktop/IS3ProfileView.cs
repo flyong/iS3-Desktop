@@ -13,7 +13,7 @@ using IS3.Core;
 
 namespace IS3.Desktop
 {
-    class IS3ProfileView : IS3View
+    class IS3ProfileView : IS3View2D
     {
         public IS3ProfileView(UserControl parent, MapView mapView)
             : base (parent, mapView)

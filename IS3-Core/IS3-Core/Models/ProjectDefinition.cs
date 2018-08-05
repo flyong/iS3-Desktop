@@ -39,12 +39,14 @@ namespace IS3.Core
     {
         public ProjectLocation() { Default = false; }
 
-        public double X { get; set; }
-        public double Y { get; set; }
+        public string X { get; set; }
+        public string Y { get; set; }
         public string ID { get; set; }
         public string DefinitionFile { get; set; }
         public string Description { get; set; }
         public bool Default { get; set; }
+        public string CODE { get; set; }
+        public string ProjectTitle { get; set; }
     }
 
     // Summary:
@@ -57,10 +59,10 @@ namespace IS3.Core
             Locations = new ObservableCollection<ProjectLocation>();
         }
 
-        public double XMax { get; set; }
-        public double XMin { get; set; }
-        public double YMax { get; set; }
-        public double YMin { get; set; }
+        public double XMax { get; set; } = 13500000;
+        public double XMin { get; set; } = 13560000;
+        public double YMax { get; set; } = 3640000;
+        public double YMin { get; set; } = 3690000;
         public ObservableCollection<ProjectLocation> Locations { get; set; }
         public bool UseGeographicMap { get; set; }
 
@@ -146,12 +148,6 @@ namespace IS3.Core
         [DataMember]
         public string LocalTilePath { get; set; }
         [DataMember]
-        public string DatabaseName1 { get; set; }
-        [DataMember]
-        public string DatabaseName2 { get; set; }
-        [DataMember]
-        public string DatabaseName3 { get; set; }
-        [DataMember]
         public string DataServiceUrl { get; set; }
         [DataMember]
         public string GeometryServiceUrl { get; set; }
@@ -202,8 +198,8 @@ namespace IS3.Core
         public override string ToString()
         {
             string str = string.Format(
-                "Project definition: ID={0}, ProjectTitle={1}, DefaultMapID={2}, DatabaseName1={3}",
-                ID, ProjectTitle, DefaultMapID, DatabaseName1);
+                "Project definition: ID={0}, ProjectTitle={1}, DefaultMapID={2}",
+                ID, ProjectTitle, DefaultMapID);
             return str;
         }
     }

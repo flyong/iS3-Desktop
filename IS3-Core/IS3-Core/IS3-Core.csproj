@@ -80,7 +80,20 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Control\ILogin.cs" />
+    <Compile Include="Control\IProjectList.cs" />
+    <Compile Include="Control\IS3PageHolder.cs" />
+    <Compile Include="Control\IS3RuntimeControl.cs" />
+    <Compile Include="Control\IView2D.cs" />
+    <Compile Include="Control\IView3D.cs" />
+    <Compile Include="Control\IPageTransition.cs" />
     <Compile Include="Core.cs" />
+    <Compile Include="Control\IS3ViewNormal.cs" />
+    <Compile Include="DllImport.cs" />
+    <Compile Include="FTP.cs" />
+    <Compile Include="iS3Property.cs" />
+    <Compile Include="MessageConverter.cs" />
+    <Compile Include="Models\AuthLogin.cs" />
     <Compile Include="Models\DGObject.cs" />
     <Compile Include="Models\DGObjects.cs" />
     <Compile Include="Models\DGObjectsCollection.cs" />
@@ -96,21 +109,15 @@
     <Compile Include="Graphics\RendererDef.cs" />
     <Compile Include="Graphics\RendererInterface.cs" />
     <Compile Include="Graphics\SymbolDef.cs" />
+    <Compile Include="Models\UserLogin.cs" />
     <Compile Include="ReflectionConvertHelper.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Models\Project.cs" />
-    <Compile Include="Repository\RepositoryForClient.cs" />
     <Compile Include="Repository\RepositoryForDGObjects.cs" />
-    <Compile Include="Repository\RepositoryForDomain.cs" />
     <Compile Include="Repository\RepositoryForProject.cs" />
+    <Compile Include="Service\FileService.cs" />
     <Compile Include="Service\iS3Cache.cs" />
     <Compile Include="Service\ServiceConfig.cs" />
-    <Compile Include="Service\ServiceImporter.cs" />
-    <Compile Include="Service\IDataService.cs" />
-    <Compile Include="Service\IFileService.cs" />
-    <Compile Include="Service\IMapService.cs" />
-    <Compile Include="Service\IPrivilegeService.cs" />
-    <Compile Include="Service\IS3Service.cs" />
     <Compile Include="LayerDef.cs" />
     <Compile Include="Service\WebApiCaller.cs" />
     <Compile Include="Shape\ShapeObject.cs" />
@@ -122,9 +129,6 @@
     <Compile Include="Control\Mainframe.cs" />
     <Compile Include="Runtime.cs" />
     <Compile Include="Models\ProjectDefinition.cs" />
-    <Compile Include="Serialization\DbDataLoader.cs" />
-    <Compile Include="Serialization\DGObjectLoader.cs" />
-    <Compile Include="Serialization\IS3XmlSerializer.cs" />
     <Compile Include="Graphics\SymbolInterface.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Models\Tree.cs" />
@@ -135,6 +139,7 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

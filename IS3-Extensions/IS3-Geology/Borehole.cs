@@ -6,8 +6,8 @@ using System.Data;
 using System.Windows;
 
 using IS3.Core;
-using IS3.Core.Serialization;
-using IS3.Geology.Serialization;
+//using IS3.Core.Serialization;
+//using IS3.Geology.Serialization;
 using IS3.Geology.UserControls;
 
 namespace IS3.Geology
@@ -51,19 +51,6 @@ namespace IS3.Geology
         public Borehole()
         {
             geologies = new List<BoreholeGeology>();
-        }
-
-        public Borehole(DataRow rawData)
-            :base(rawData)
-        {
-            geologies = new List<BoreholeGeology>();
-        }
-
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader = new GeologyDGObjectLoader();
-            bool success = loader.LoadBoreholes(objs);
-            return success;
         }
         public override string ToString()
         {
@@ -121,7 +108,7 @@ namespace IS3.Geology
             }
 
             Domain geologyDomain = Globals.project.getDomain(DomainType.Geology);
-            DGObjectsCollection strata =await geologyDomain.getObjects("Stratum");
+            List<DGObject> strata =await geologyDomain.getObjects("Stratum");
 
             BoreholeCollectionView bhsView = new BoreholeCollectionView();
             bhsView.Name = "Geology";

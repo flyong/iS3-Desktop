@@ -37,49 +37,49 @@ namespace IS3.Core
     //
     public class DGObjectsCollection : List<DGObjects>
     {
-        // Summary:
-        //     Get object by an object ID
-        public new DGObject this [int objID]
-        {
-            get
-            {
-                foreach (DGObjects objs in this)
-                {
-                    if (objs.containsKey(objID))
-                        return objs[objID];
-                }
-                return null;
-            }
-        }
+        //// Summary:
+        ////     Get object by an object ID
+        //public new DGObject this[int objID]
+        //{
+        //    get
+        //    {
+        //        foreach (DGObjects objs in this)
+        //        {
+        //            if (objs.containsKey(objID))
+        //                return objs[objID];
+        //        }
+        //        return null;
+        //    }
+        //}
 
-        // Summary:
-        //     Get object by a object key
-        public DGObject this [string key]
-        {
-            get
-            {
-                foreach (DGObjects objs in this)
-                {
-                    if (objs.containsKey(key))
-                        return objs[key];
-                }
-                return null;
-            }
-        }
+        //// Summary:
+        ////     Get object by a object key
+        //public DGObject this[string key]
+        //{
+        //    get
+        //    {
+        //        foreach (DGObjects objs in this)
+        //        {
+        //            if (objs.containsKey(key))
+        //                return objs[key];
+        //        }
+        //        return null;
+        //    }
+        //}
 
-        // Summary:
-        //     Merge the collection to a list of DGObject
-        public List<DGObject> merge()
-        {
-            List<DGObject> result = new List<DGObject>();
-            foreach (DGObjects objs in this)
-            {
-                foreach (DGObject obj in objs.values)
-                {
-                    result.Add(obj);
-                }
-            }
-            return result;
-        }
+        //// Summary:
+        ////     Merge the collection to a list of DGObject
+        //public List<DGObject> merge()
+        //{
+        //    List<DGObject> result = new List<DGObject>();
+        //    foreach (DGObjects objs in this)
+        //    {
+        //        foreach (DGObject obj in objs.values)
+        //        {
+        //            result.Add(obj);
+        //        }
+        //    }
+        //    return result;
+        //}
     }
 }

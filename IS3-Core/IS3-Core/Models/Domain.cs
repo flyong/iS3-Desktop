@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-using IS3.Core.Serialization;
+//using IS3.Core.Serialization;
 using IS3.Core.Shape;
 
 namespace IS3.Core
@@ -74,6 +74,18 @@ namespace IS3.Core
         public Dictionary<string, DGObjectsDefinition> 
             objsDefinitions { get; set; }
 
+        public List<DGObjectsDefinition> GetDef(string type)
+        {
+            List<DGObjectsDefinition> list = new List<DGObjectsDefinition>();
+            foreach (DGObjectsDefinition def in objsDefinitions.Values)
+            {
+                if (def.Type == type)
+                {
+                    list.Add(def);
+                }
+            }
+            return  list;
+        }
         // Summary:
         //      Objects container class
         // Remarks:
@@ -159,27 +171,6 @@ namespace IS3.Core
             return domain;
         }
 
-        // Summary:
-        //     Load objects from database
-        //public bool loadObjects(string objDefName, DbContext dbContext)
-        //{
-        //    if (parent == null)
-        //        return false;
-
-        //    DGObjectsDefinition def = objsDefinitions[objDefName];
-        //    if (def == null)
-        //        return false;
-
-        //    DGObjects objs = new DGObjects(def);
-        //    bool success = objs.load(dbContext);
-        //    objs.parent = this;
-
-        //    // Old objs will be replaced recently loaded objects.
-        //    if (success)
-        //        objsContainer[def.Name] = objs;
-
-        //    return success;
-        //}
         public bool loadObjects(string objDefName)
         {
             if (parent == null)
@@ -190,34 +181,15 @@ namespace IS3.Core
                 return false;
 
             DGObjects objs = new DGObjects(def);
-            //bool success = objs.load(dbContext);
-            bool success = objs.load();
+            //bool success = objs.load();
             objs.parent = this;
 
             // Old objs will be replaced recently loaded objects.
-            if (success)
+            //if (success)
                 objsContainer[def.Name] = objs;
 
-            return success;
+            return true;
         }
-        // Summary:
-        //     Load all objects from database
-        //public bool loadAllObjects(DbContext dbContext)
-        //{
-        //    if (parent == null)
-        //        return false;
-
-        //    bool success = true;
-
-        //    foreach (DGObjectsDefinition def in objsDefinitions.Values)
-        //    {
-        //        bool loaded = loadObjects(def.Name, dbContext);
-        //        if (!loaded)
-        //            success = false;
-        //    }
-
-        //    return success;
-        //}
         public bool loadAllObjects()
         {
             if (parent == null)
@@ -244,56 +216,13 @@ namespace IS3.Core
         //     If there are multiple DGObjects with the specified object type,
         //     then a new DGObjects is returned which will merged all the objects.
         //     In this situation, the index of the DGObjects are lost.
-        public async Task<DGObjectsCollection> getObjects(string objType)
+        public async Task<List<DGObject>> getObjects(string objType)
         {
-            DGObjectsCollection result = new DGObjectsCollection();
             DGObjectRepository repository = DGObjectRepository.Instance(
-                "SHML12", name, objType);
+                Globals.project.projDef.ID, name, objType);
             List<DGObject> objList = await repository.GetAllAsync();
-            DGObjects objs = new DGObjects();
-            objs._objs = new Dictionary<string, DGObject>();
-            objs._id2Obj = new Dictionary<int, DGObject>();
-            foreach (DGObject obj in objList)
-            {
-                objs._id2Obj[obj.id] = obj;
-                objs._objs[obj.name] = obj;
-            }
-            result.Add(objs);
-            //IEnumerable<DGObjectsDefinition> defs = 
-            //    objsDefinitions.Values.Where(x => x.Type == objType);
-            //if (defs == null || defs.Count() == 0)
-            //    return null;
-
-            //DGObjectsCollection result = new DGObjectsCollection();
-            //foreach (DGObjectsDefinition def in defs)
-            //{
-            //    if (objsContainer.ContainsKey(def.Name))
-            //    {
-            //        DGObjects objs = objsContainer[def.Name];
-            //        result.Add(objs);
-            //    }
-            //}
-            return result;
+            return objList;
         }
 
-        // test code
-        public void test()
-        {
-            var objs = objsContainer["AllTunnels"];
-            var obj = objs.values.FirstOrDefault();
-            var row = obj.rawData;
-            var shape = row["Shape"];
-            
-            byte[] bytes = (byte[])shape;
-
-            //int i = BitConverter.ToInt32(bytes, 0);
-            //double x1 = BitConverter.ToDouble(bytes, 4);
-            //double y1 = BitConverter.ToDouble(bytes, 12);
-            //double x2 = BitConverter.ToDouble(bytes, 20);
-            //double y2 = BitConverter.ToDouble(bytes, 28);
-
-            ShapeObject shp = ShapeBuilder.BuildObject(bytes);
-
-        }
     }
 }

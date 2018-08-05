@@ -29,7 +29,7 @@ namespace IS3.Geology.UserControls
         public double Top { get; set; }
         public double Base { get; set; }
         public double TotalLength { get { return Top - Base; } }
-        public DGObjectsCollection Strata { get; set; }
+        public List<DGObject> Strata { get; set; }
         public List<Borehole> Boreholes  { get; set;}
 
         double x_space = 70;

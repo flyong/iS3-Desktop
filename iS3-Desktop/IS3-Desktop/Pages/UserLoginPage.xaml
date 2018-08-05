@@ -41,11 +41,11 @@
                 </Border>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal" Margin="40 0 0 0">
                     <TextBlock  Text="账　户" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
-                    <TextBox Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent"  Width="200"  Name="LoginNameTB"/>
+                    <TextBox Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent"  Width="200"  Name="LoginNameTB" Text="iS3Guest"/>
                 </StackPanel>
                 <StackPanel Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal" Margin="40 0 0 0">
                     <TextBlock  Text="密　码" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
-                    <PasswordBox Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent" Width="200" Name="LoginPasswordTB"/>
+                    <PasswordBox Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent" Width="200" Name="LoginPasswordTB" Password="iS3Guest"/>
                 </StackPanel>
                 <WrapPanel Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Button Name="LoginButton" 
@@ -62,32 +62,22 @@
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="0.5*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
-                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1.1*"/>
                     <RowDefinition Height="1*"/>
                     <RowDefinition Height="0.8*"/>
                 </Grid.RowDefinitions>
                 <Border Background="#4C000000" CornerRadius="10 10 0 0">
-                    <TextBlock Text="系统配置"  Foreground="#FFABB9C5"  FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock Text="服务器连接配置"  Foreground="#FFABB9C5"  FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center"></TextBlock>
                 </Border>
                 <StackPanel Grid.Row="1" VerticalAlignment="Center" Orientation="Horizontal" Margin="40 0 0 0">
-                    <TextBlock  Text="主数据库IP" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
+                    <TextBlock  Text="服务地址" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
                     <TextBox Name="DBAddress_TB" Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent"  Width="200" />
                 </StackPanel>
                 <StackPanel Grid.Row="2" VerticalAlignment="Center" Orientation="Horizontal" Margin="40 0 0 0">
-                    <TextBlock  Text="主数据库名" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
-                    <TextBox Name="DBName_TB" Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent" Width="200" />
+                    <TextBlock  Text="服务端口" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
+                    <TextBox Name="DBPort_TB" Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent" Width="200" />
                 </StackPanel>
-                <StackPanel Grid.Row="3" VerticalAlignment="Center" Orientation="Horizontal" Margin="40 0 0 0">
-                    <TextBlock Text="数据库账户" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
-                    <TextBox   Name="DBUser_TB"  Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent" Width="200" />
-                </StackPanel>
-                <StackPanel Grid.Row="4" VerticalAlignment="Center" Orientation="Horizontal" Margin="40 0 0 0">
-                    <TextBlock  Text="数据库密码" Padding="10 3 10 3"  Foreground="#FFABB9C5" FontSize="15" VerticalAlignment="Center"></TextBlock>
-                    <TextBox Name="DBPW_TB" Foreground="#FFABB9C5" VerticalContentAlignment="Center" Background="Transparent" Width="200" />
-                </StackPanel>
-                <WrapPanel Grid.Row="5" VerticalAlignment="Center" HorizontalAlignment="Center">
+                <WrapPanel Grid.Row="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                     <Button Name="CommitButton" 
                                    HorizontalAlignment="Center" FontSize="15" Padding="4"  Width="100" BorderThickness="0"
                                    Background="#196D83B0" Foreground="#FFABB9C5" Click="Commit_Click">确定</Button>

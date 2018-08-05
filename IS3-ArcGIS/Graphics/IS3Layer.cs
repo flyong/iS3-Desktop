@@ -79,13 +79,13 @@ namespace IS3.ArcGIS.Graphics
         //     Gets the geometry type of the features in the layer.
         public IS3.Core.Geometry.GeometryType geometryType { get; set; }
 
-        // Summary:
-        //      Sync graphic with objects based on the following condition:
-        //          graphic.Attribute["Name"] = obj.Name
-        public int syncObjects(DGObjects objs)
-        {
-            return syncObjects(objs.values);
-        }
+        //// Summary:
+        ////      Sync graphic with objects based on the following condition:
+        ////          graphic.Attribute["Name"] = obj.Name
+        //public int syncObjects(DGObjects objs)
+        //{
+        //    return syncObjects(objs.values);
+        //}
         public int syncObjects(IEnumerable<DGObject> objs)
         {
             if (objs == null)
@@ -151,12 +151,26 @@ namespace IS3.ArcGIS.Graphics
 
         public IGraphicCollection getGraphics(DGObject obj)
         {
-            if (_obj2Graphics == null)
-                return null;
-            if (_obj2Graphics.ContainsKey(obj))
-                return _obj2Graphics[obj];
-            else
-                return null;
+            ///
+            IGraphicCollection _graphics = new IS3GraphicCollection();
+            foreach (IGraphic g in graphics)
+            {
+                if (g.Attributes.ContainsKey("Name"))
+                {
+                    string name = g.Attributes["Name"] as string;
+                    if (name == obj.name)
+                    {
+                        _graphics.Add( g);
+                    }
+                }
+            }
+            return _graphics;
+            //if (_obj2Graphics == null)
+            //    return null;
+            //if (_obj2Graphics.ContainsKey(obj))
+            //    return _obj2Graphics[obj];
+            //else
+            //    return null;
         }
 
         public DGObject getObject(string graphicName)
@@ -267,21 +281,56 @@ namespace IS3.ArcGIS.Graphics
             List<DGObject> objs = getHighlightedObjects();
             return objs;
         }
-
+        public DGObject GetObjByID(int id)
+        {
+            foreach (DGObject obj in _obj2Graphics.Keys)
+            {
+                if (obj.id == id)
+                {
+                    return obj;
+                }
+            }
+            return null;
+        }
         public int highlightObject(DGObject obj, bool on = true)
         {
             int count = 0;
-            if (_obj2Graphics != null &&
-                _obj2Graphics.ContainsKey(obj))
+            foreach (IGraphic g in graphics)
             {
-                IGraphicCollection gc = _obj2Graphics[obj];
-                foreach (IGraphic g in gc)
+                if (g.Attributes.ContainsKey("Name"))
                 {
-                    if (g.IsSelected != on)
-                        g.IsSelected = on;
+                    string name = g.Attributes["Name"] as string;
+                    if (name == obj.name)
+                    {
+                        if (g.IsSelected != on)
+                            g.IsSelected = on;
+                    }
                 }
             }
+            //if (_obj2Graphics != null &&
+            //    _obj2Graphics.ContainsKey(GetObjByID(obj.id)))
+            //{
+            //    IGraphicCollection gc = _obj2Graphics[GetObjByID(obj.id)];
+            //    foreach (IGraphic g in gc)
+            //    {
+            //        if (g.IsSelected != on)
+            //            g.IsSelected = on;
+            //    }
+            //}
             return count;
+
+            //int count = 0;
+            //if (_obj2Graphics != null &&
+            //    _obj2Graphics.ContainsKey(obj))
+            //{
+            //    IGraphicCollection gc = _obj2Graphics[obj];
+            //    foreach (IGraphic g in gc)
+            //    {
+            //        if (g.IsSelected != on)
+            //            g.IsSelected = on;
+            //    }
+            //}
+            //return count;
         }
 
         public int highlightObject(IEnumerable<DGObject> objs,
@@ -321,6 +370,11 @@ namespace IS3.ArcGIS.Graphics
         {
             foreach (IGraphic g in gc)
                 addGraphic(g);
+        }
+
+        public int syncObjects(DGObjects objs)
+        {
+            return 0;
         }
     }
 }

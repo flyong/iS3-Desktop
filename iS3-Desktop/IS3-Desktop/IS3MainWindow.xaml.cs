@@ -39,11 +39,6 @@ namespace IS3.Desktop
 
             UserLoginPage userLoginPage = new UserLoginPage();
             pageTransitionControl.ShowPage(userLoginPage);
-
-            //ProjectListPage projectListPage = new ProjectListPage();
-            //pageTransitionControl.ShowPage(projectListPage);
-
-            //SwitchToMainFrame("NJ_MetroL10.xml");
         }
 
         void MainWindow_Closing(object sender,

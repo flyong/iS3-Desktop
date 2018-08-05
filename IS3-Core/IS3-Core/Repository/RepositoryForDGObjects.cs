@@ -67,27 +67,33 @@ namespace IS3.Core
 
         public async Task<DGObject> Retrieve(int key)
         {
-            //网络请求 
-            string result = await Task.Run(() =>
-               WebApiCaller.HttpGet(ServiceConfig.BaseURL +
-               string.Format(ServiceConfig.DGObjectByIDFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,key)));
-            //
-            JObject obj = JObject.Parse(result);
-            string data = obj["data"].ToString();
-            //
-            DGObject objHelper =
-              ObjectHelper.CreateDGObjectFromSubclassName(dgobjectName);
-            var _obj = JsonConvert.DeserializeObject(data, objHelper.GetType());
-            return _obj as DGObject;
+            try {
+    
+                    //网络请求 
+                    string result = await Task.Run(() =>
+                       WebApiCaller.HttpGet(ServiceConfig.BaseURL +
+                       string.Format(ServiceConfig.DGObjectByIDFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID, key)));
+                    //
+                    JObject obj = JObject.Parse(result);
+                    string data = obj["data"].ToString();
+                    //
+                    DGObject objHelper =
+                      ObjectHelper.CreateDGObjectFromSubclassName(dgobjectName);
+                    var _obj = JsonConvert.DeserializeObject(data, objHelper.GetType());
+                    return _obj as DGObject;
+
+            }
+            catch (Exception e) { return null; }
+
         }
         static IEnumerable<Type> subclasses = null;
         //获取对象列表
-        public async Task<List<DGObject>> GetAllAsync()
+        public async Task<List<DGObject>> GetAllByObjs(string filter)
         {
             //网络请求 
             string result = await Task.Run(() =>
-               WebApiCaller.HttpGet(ServiceConfig.BaseURL + 
-               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID)));
+               WebApiCaller.HttpGet(ServiceConfig.BaseURL +
+               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,IS3.Core.MessageConverter.EnCode(filter))));
             //
             JObject obj = JObject.Parse(result);
             string data = obj["data"].ToString();
@@ -112,7 +118,43 @@ namespace IS3.Core
             List<DGObject> list = new List<DGObject>();
             foreach (JToken token in objList)
             {
-               var _obj=JsonConvert.DeserializeObject(token.ToString(), t);
+                var _obj = JsonConvert.DeserializeObject(token.ToString(), t);
+                list.Add(_obj as DGObject);
+            }
+            return list;
+        }
+        //获取对象列表
+        public async Task<List<DGObject>> GetAllAsync()
+        {
+            //网络请求 
+            string result = await Task.Run(() =>
+               WebApiCaller.HttpGet(ServiceConfig.BaseURL +
+               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,"")));
+            //
+            JObject obj = JObject.Parse(result);
+            string data = obj["data"].ToString();
+            JArray objList = JArray.Parse(data);
+            //
+            if (subclasses == null)
+            {
+                subclasses =
+                        from assembly in AppDomain.CurrentDomain.GetAssemblies()
+                        from type in assembly.GetTypes()
+                        where type.IsSubclassOf(typeof(DGObject))
+                        select type;
+            }
+
+            // match the subclassName with full name at first
+            Type t = subclasses.FirstOrDefault(x => x.FullName == dgobjectName);
+
+            // if not found, match the subclassName with name
+            if (t == null)
+                t = subclasses.FirstOrDefault(x => x.Name == dgobjectName);
+
+            List<DGObject> list = new List<DGObject>();
+            foreach (JToken token in objList)
+            {
+                var _obj = JsonConvert.DeserializeObject(token.ToString(), t);
                 list.Add(_obj as DGObject);
             }
             return list;

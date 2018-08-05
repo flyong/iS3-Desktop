@@ -48,7 +48,7 @@ namespace IS3.Desktop
     public partial class ProfileView : UserControl, IViewHolder
     {
         protected MainFrame _mainFrame;
-        protected IS3View _view;
+        protected IS3View2D _view;
         protected LayersWindow _layersWindow;
 
         public void setCoord(string coord)
@@ -82,7 +82,7 @@ namespace IS3.Desktop
 
         void ProfileView_GotFocus(object sender, RoutedEventArgs e)
         {
-            _mainFrame.activeView = _view;
+           // _mainFrame.activeView = _view;
         }
 
         private void PinButton_Click(object sender, RoutedEventArgs e)

@@ -6,8 +6,8 @@ using System.Web;
 using System.Data;
 
 using IS3.Core;
-using IS3.Core.Serialization;
-using IS3.Geology.Serialization;
+//using IS3.Core.Serialization;
+//using IS3.Geology.Serialization;
 
 namespace IS3.Geology
 {
@@ -43,17 +43,7 @@ namespace IS3.Geology
         {
         }
 
-        public StratumSection(DataRow rawData)
-            :base(rawData)
-        {
-        }
 
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadStratumSections(objs);
-            return success;
-        }
     }
 
     public class SoilProperty : DGObject
@@ -78,19 +68,7 @@ namespace IS3.Geology
             DynamicProp = new SoilDynamicProperty();
         }
 
-        public SoilProperty(DataRow rawData)
-            :base(rawData)
-        {
-            StaticProp = new SoilStaticProperty();
-            DynamicProp = new SoilDynamicProperty();
-        }
 
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadSoilProperties(objs);
-            return success;
-        }
     }
 
     public class SoilStaticProperty

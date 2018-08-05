@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Data;
 
-using IS3.Core.Serialization;
+//using IS3.Core.Serialization;
 
 namespace IS3.Core
 {
@@ -43,9 +43,6 @@ namespace IS3.Core
         public string Name { get; set; }
         public bool HasGeometry { get; set; }
         public string GISLayerName { get; set; }
-        public string DatabaseName { get; set; }
-        public string TableNameSQL { get; set; }
-        public string DefNamesSQL { get; set; }
         public string ConditionSQL { get; set; }
         public string OrderSQL { get; set; }
         public bool Has3D { get; set; }
@@ -67,12 +64,7 @@ namespace IS3.Core
             attr = root.Attribute("GISLayerName");
             if (attr != null)
                 def.GISLayerName = (string)attr;
-            attr = root.Attribute("TableNameSQL");
-            if (attr != null)
-                def.TableNameSQL = (string)attr;
-            attr = root.Attribute("DefNamesSQL");
-            if (attr != null)
-                def.DefNamesSQL = (string)attr;
+
             attr = root.Attribute("ConditionSQL");
             if (attr != null)
                 def.ConditionSQL = (string)attr;
@@ -88,28 +80,15 @@ namespace IS3.Core
             if (attr != null)
                 def.Layer3DName = (string)attr;
 
-            attr = root.Attribute("DatabaseIndex");
-            def.DatabaseName = (attr == null) ? GetDatabaseName("1") : GetDatabaseName((string)attr);
             return def;
-        }
-         static string GetDatabaseName(string DatabaseIndex)
-        {
-            switch (DatabaseIndex)
-            {
-                case "1":return Globals.project.projDef.DatabaseName1;
-                case "2":return Globals.project.projDef.DatabaseName2;
-                case "3":return Globals.project.projDef.DatabaseName3;
-                default:return null;
-            }
         }
 
         public override string ToString()
         {
             string str = string.Format(
                 "Object definition: Type={0}, Name={1}, HasGeometry={2}, GISLayerName={3}," +
-                "TableNameSQL={4}, DefNameSQL={5}, ConditionSQL={6}, OrderSQL={7}",
-                Type, Name, HasGeometry, GISLayerName,
-                TableNameSQL, DefNamesSQL, ConditionSQL, OrderSQL);
+                "ConditionSQL={4}, OrderSQL={5}",
+                Type, Name, HasGeometry, GISLayerName, ConditionSQL, OrderSQL);
             return str;
         }
     }
@@ -130,168 +109,88 @@ namespace IS3.Core
     //
     public class DGObjects
     {
-        // cmd for obj deatail database
-        //public Dictionary<string,string> cmdList;
-
-        //public bool LoadObjs_Detail(List<DGObject> objs)
-        //{
-        //    DbContext dbContext = Globals.project.getDbContext();
-        //    bool success = dbContext.Open();
-        //    foreach (DGObject obj in objs)
-        //    {
-        //        if (!obj.hasLoadDetail)
-        //        {
-        //            obj.LoadObj_Detail(dbContext);
-        //        }
-        //    }
-        //    dbContext.Close();
-        //    return true;
-        //}
         public DGObjects() { }
-        // Summary:
-        //     Object dictionay
-        // Remarks:
-        //     Object name is used as the key
-        public Dictionary<string, DGObject> _objs;
-        // Summary:
-        //     id index to object
-        public Dictionary<int, DGObject> _id2Obj { get; set; }
+        //// Summary:
+        ////     Object dictionay
+        //// Remarks:
+        ////     Object name is used as the key
+        //public Dictionary<string, DGObject> _objs;
+        //// Summary:
+        ////     id index to object
+        //public Dictionary<int, DGObject> _id2Obj { get; set; }
 
         // Parent of the objects
         public Domain parent { get; set; }
         // Objects definition
         public DGObjectsDefinition definition { get; set; }
-        // Raw DataSet that is readed from database
-        public DataSet rawDataSet { get; set; }
 
-        // Summary:
-        //     RowView index to object and vice versa.
-        // Remarks:
-        //     DataRowVew is used as an index for datagrid selection,
-        //     where a selected row can be mapped to object quickly. 
-        //     Similarly, object is used as an index to DataRowView.
-        public Dictionary<DataRow, DGObject> rowView2Obj { get; set; }
-        public Dictionary<DGObject, DataRow> obj2RowView { get; set; }
+        public string filter { get; set; }
+
+        public string GetFilter()
+        {
+            string result = filter == null ? "" : filter;
+            result += ((filter != null) && (filter.Length > 0) && (definition.ConditionSQL != null) && (definition.ConditionSQL.Length > 0)) ? "and" + definition.ConditionSQL : definition.ConditionSQL;
+            return result;
+        }
 
         // Summary:
         //     Constructors
         public DGObjects(DGObjectsDefinition def)
         {
-            _objs = new Dictionary<string, DGObject>();
+            //_objs = new Dictionary<string, DGObject>();
 
             definition = def;
         }
 
-        // Summary:
-        //     Get object by a key
-        public DGObject this[string key]
-        {
-            get { return _objs[key]; }
-            set { _objs[key] = value; value.parent = this; }
-        }
+        ////// Summary:
+        //////     Get object by a key
+        ////public DGObject this[string key]
+        ////{
+        ////    get { return _objs[key]; }
+        ////    set { _objs[key] = value; value.parent = this; }
+        ////}
 
-        // Summary:
-        //     Get object by an id
-        public DGObject this[int id]
-        {
-            get { return _id2Obj[id]; }
-        }
-
-        public Dictionary<string, DGObject>.ValueCollection values
-        {
-            get { return _objs.Values; }
-        }
-
-        public bool containsKey(string key)
-        {
-            return _objs.ContainsKey(key);
-        }
-
-        public bool containsKey(int objID)
-        {
-            return _id2Obj.ContainsKey(objID);
-        }
-
-        public int count
-        {
-            get { return _objs.Count; }
-        }
-
-        public override string ToString()
-        {
-            String str = string.Format("Objs: Type={0}, Count={1}, ",
-                definition==null? null : definition.Type, _objs.Count);
-
-            ICollection<string> keys = _objs.Keys;
-            string strKeys = "Keys=";
-            foreach (string key in keys)
-            {
-                strKeys += key + ",";
-            }
-
-            str += strKeys;
-            return str;
-        }
-
-        //public bool load(DbContext dbContext)
+        //// Summary:
+        ////     Get object by an id
+        //public DGObject this[int id]
         //{
-        //    rawDataSet = new DataSet(definition.Type);
-
-        //    DGObject objHelper =
-        //        ObjectHelper.CreateDGObjectFromSubclassName(definition.Type);
-        //    bool success = objHelper.LoadObjs(this, dbContext);
-        //    buildIDIndex();
-        //    buildRowViewIndex();
-
-        //    return success;
+        //    get { return _id2Obj[id]; }
         //}
-        public bool load()
-        {
-            rawDataSet = new DataSet(definition.Type);
 
-            DGObject objHelper =
-                ObjectHelper.CreateDGObjectFromSubclassName(definition.Type);
-            bool success = objHelper.LoadObjs(this);
-            buildIDIndex();
-            buildRowViewIndex();
+        //public Dictionary<string, DGObject>.ValueCollection values
+        //{
+        //    get { return _objs.Values; }
+        //}
 
-            return success;
-        }
-        // Summary:
-        //     Build ID index to object
-        protected void buildIDIndex()
-        {
-            _id2Obj = new Dictionary<int, DGObject>();
-            foreach (DGObject obj in _objs.Values)
-            {
-                int id = obj.id;
-                _id2Obj[id] = obj;
-            }
-        }
+        //public bool containsKey(string key)
+        //{
+        //    return _objs.ContainsKey(key);
+        //}
 
-        // Summary:
-        //     Build RowView index to object and vice versa.
-        protected void buildRowViewIndex()
-        {
-            if (rawDataSet == null || rawDataSet.Tables.Count == 0)
-                return;
+        //public bool containsKey(int objID)
+        //{
+        //    return _id2Obj.ContainsKey(objID);
+        //}
 
-            DataTable dt = rawDataSet.Tables[0];
-            rowView2Obj = new Dictionary<DataRow, DGObject>();
-            foreach (DGObject obj in _objs.Values)
-                rowView2Obj[obj.rawData] = obj;
+        //public int count
+        //{
+        //    get { return _objs.Count; }
+        //}
 
-            obj2RowView = new Dictionary<DGObject, DataRow>();
-            foreach (DataRow dr in dt.Rows)
-            {
-                if (rowView2Obj.ContainsKey(dr))
-                {
-                    // get the object using the DataRow as an index
-                    //
-                    DGObject obj = rowView2Obj[dr];
-                    obj2RowView[obj] = dr;
-                }
-            }
-        }
+        //public override string ToString()
+        //{
+        //    String str = string.Format("Objs: Type={0}, Count={1}, ",
+        //        definition==null? null : definition.Type, _objs.Count);
+
+        //    ICollection<string> keys = _objs.Keys;
+        //    string strKeys = "Keys=";
+        //    foreach (string key in keys)
+        //    {
+        //        strKeys += key + ",";
+        //    }
+
+        //    str += strKeys;
+        //    return str;
+        //}
     }
 }

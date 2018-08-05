@@ -20,6 +20,7 @@ using Xceed.Wpf.AvalonDock.Layout.Serialization;
 using IS3.Core;
 using IS3.Python;
 using IS3.Desktop.UserControls;
+using IS3.Core.Service;
 
 namespace IS3.Desktop
 {
@@ -61,7 +62,7 @@ namespace IS3.Desktop
         List<IView> _views = new List<IView>();
         IView _activeView = null;
 
-        List<IS3Tree> _treePanels = new List<IS3Tree>();
+      //  List<IS3Tree> _treePanels = new List<IS3Tree>();
         Tree _lastSelectedTree;
 
         ProgressBarWindow _pbw;
@@ -71,7 +72,8 @@ namespace IS3.Desktop
         public event EventHandler<ObjSelectionChangedEventArgs>
             objSelectionChangedTrigger;
         public event EventHandler projectLoaded;
-        
+        public event EventHandler<DGObjectsSelectionChangedEventArgs> dGObjectsSelectionChangedTrigger;
+
         public Project prj 
         { 
             get { return _prj; }
@@ -87,12 +89,13 @@ namespace IS3.Desktop
             set
             {
                 _activeView = value;
-                LayoutContent doc = FindLayoutContentByID(value.eMap.MapID);
-                if (doc != null && doc.IsSelected == false)
-                    doc.IsSelected = true;
+                //LayoutContent doc = FindLayoutContentByID(value.eMap.MapID);
+                //if (doc != null && doc.IsSelected == false)
+                //    doc.IsSelected = true;
             }
         }
         #endregion
+        List<IViewHolder> viewHolders = new List<IViewHolder>();
 
         public string ProjectID
         {
@@ -102,16 +105,17 @@ namespace IS3.Desktop
         {
             get { return _pbw; }
         }
-        public IView GetView(string mapID)
-        {
-            return _views.Find(i => i.eMap.MapID == mapID);
-        }
+        //public IView GetView(string mapID)
+        //{
+        //    return _views.Find(i => i.eMap.MapID == mapID);
+        //}
         public ToolTreeItem toolTreeRoot
         {
             get { return ToolsPanel.toolboxesTree; }
         }
 
         public List<IExteralUI> exteralUIs { get; set; }
+        public string projectID { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         public MainFrame(string projectID)
         {
@@ -119,7 +123,7 @@ namespace IS3.Desktop
             // Load project definition and user data at first
             // 
             _projectID = projectID;
-            
+
             _app = App.Current as App;
             _app.MainFrame = this;
             Globals.mainframe = this;
@@ -132,8 +136,11 @@ namespace IS3.Desktop
             _layoutRoot.Manager.Loaded += Manager_Loaded;
             _layoutRoot.Manager.Unloaded += Manager_Unloaded;
 
-            MyDataGrid.DGObjectDataGrid.SelectionChanged += DGObjectDataGrid_SelectionChanged;
-            this.objSelectionChangedTrigger += objectView.objSelectionChangedListener;
+            //MyDataGrid.DGObjectDataGrid.SelectionChanged += DGObjectDataGrid_SelectionChanged;
+            //this.objSelectionChangedTrigger += MyDataGrid.ObjSelectionChangedListener;
+            //MyDataGrid.objSelectionChangedTrigger += this.objSelectionChangedListener;
+
+          //  this.objSelectionChangedTrigger += objectView.objSelectionChangedListener;
         }
         #region Layout work
         // You need to find LayoutContent by ID,
@@ -215,9 +222,11 @@ namespace IS3.Desktop
         {
             try
             {
-                init(); 
+                init();
+               //dGObjectsSelectionChangedTrigger += MyGrid.view.DGObjectsSelectionChangedListenerOuter;
+                //dGObjectsSelectionChangedTrigger += MyDataGrid.view.DGObjectsSelectionChangedListenerInner;
             }
-            catch
+            catch (Exception ex)
             {
                 ipcHost.ConsoleInitialized += (o, args) =>
                 {
@@ -238,29 +247,53 @@ namespace IS3.Desktop
         {
             Thread.Sleep(1000);
             output("\r\n");
-            loadExtensions();
-            //LoadProject(_projectID);
+            LoadProject("");
             LoadViews();
-            loadDomainPanels(); 
+            loadDomainPanels();
+            loadExtensions();
             loadToolboxes();
             loadPyPlugins();
-            RunProject();
+            viewHolders.Add(MyDataGrid);
+            viewHolders.Add(objectView);
+            foreach (IViewHolder viewholder in viewHolders)
+            {
+               viewholder.view.load();
+            }
+            loadByPythonAsync();
             _init = true;
         }
-        void RunProject()
+
+        public async Task loadByPythonAsync()
         {
-            AddProjectPath();
-            if (_projectID == "iS3")
+            await CheckFileExistAsync();
+            AddProjectPathToPython();
+            if ((_projectID != null)
+                && (_projectID.Length != 0))
             {
-                runStatements("");
+                string statement = string.Format("import {0}", _projectID);
+                runStatements(statement);
             }
-            else
-            if (_projectID != null)
+            runStatements("");
+        }
+        //如果文件不存在，则从服务器下载相应的文件
+        public async Task CheckFileExistAsync()
+        {
+            if ((_projectID != null)
+                && (_projectID.Length != 0))
             {
-                runStatements("import " + _projectID);
+                string proPath = Runtime.dataPath + "\\" + _projectID + "\\";
+
+                if (!File.Exists(proPath + _projectID + ".xml"))
+                {
+                    await FileService.Load(proPath, _projectID + ".xml");
+                }
+                if (!File.Exists(proPath + _projectID + ".py"))
+                {
+                    await FileService.Load(proPath, _projectID + ".py");
+                }
             }
         }
-        void AddProjectPath()
+        void AddProjectPathToPython()
         {
             string[] folders = Directory.GetDirectories(Runtime.dataPath);
             for (int i = 0; i < folders.Count(); i++)
@@ -285,20 +318,21 @@ namespace IS3.Desktop
                 // If a name is put on a child, the child will not work properly any more.
                 // You must search inside the reconstructed DockingManager to find the proper one.
                 // Call FindLayoutContentByID() to find the LayoutContent.
-                DockingManager manager = sender as DockingManager;
-                XmlLayoutSerializer instance =
-                    new XmlLayoutSerializer(manager);
-                instance.Deserialize(_configFile);
+                //--------------------------------------------
+                //DockingManager manager = sender as DockingManager;
+                //XmlLayoutSerializer instance =
+                //    new XmlLayoutSerializer(manager);
+                //instance.Deserialize(_configFile);
 
-                // Because LayoutDocument are regenerated,
-                // we need to re-attach the Closed() method to each LayoutDocument.
-                foreach (IView view in _views)
-                {
-                    LayoutContent content = FindLayoutContentByID(view.eMap.MapID);
-                    LayoutDocument layoutDoc = content as LayoutDocument;
-                    if (layoutDoc != null)
-                        layoutDoc.Closed += LayoutDoc_Closed;
-                }
+                //// Because LayoutDocument are regenerated,
+                //// we need to re-attach the Closed() method to each LayoutDocument.
+                //foreach (IView view in _views)
+                //{
+                //    LayoutContent content = FindLayoutContentByID(view.eMap.MapID);
+                //    LayoutDocument layoutDoc = content as LayoutDocument;
+                //    if (layoutDoc != null)
+                //        layoutDoc.Closed += LayoutDoc_Closed;
+                //}
             }
         }
 
@@ -353,151 +387,46 @@ namespace IS3.Desktop
                 layoutAnchorable.CanClose = false;
                 DomainTreeHolder.Children.Add(layoutAnchorable);
 
-                TreePanel treePanel = new TreePanel(domain.root);
-                treePanel.OnTreeSelected += treePanel_OnTreeSelected;
+                IS3.Control.TreePanel treePanel = new IS3.Control.TreePanel(domain.root);
+
+                treePanel.view.load();
+               // treePanel.dGObjectsSelectionChangedEventTriggle += DGObjectsSelectionChangedListener;
+                //treePanel.OnTreeSelected += treePanel_OnTreeSelected;
                 layoutAnchorable.Content = treePanel;
 
-                _treePanels.Add(treePanel.IS3Tree);
+                //_treePanels.Add(treePanel.IS3Tree);
             }
 
             // Initialize tree panels.
             // Real information of each subProject will be loaded.
             // 
-            foreach (IS3Tree treePanel in _treePanels)
-            {
-                treePanel.InitializeTree();
-            }
-        }
-
-        void treePanel_OnTreeSelected(object sender, Tree tree)
-        {
-            if (tree == null)
-                MyDataGrid.DGObjectDataGrid.ItemsSource = null;
-            MyDataGrid.DGObjectDataGrid.ItemsSource = tree.ObjectsView;
-            _lastSelectedTree = tree;
-
-            GetData(tree);
-        }
-        public  async Task GetData(Tree tree)
-        {
-            DGObjectRepository repository = DGObjectRepository.Instance(
-                "SHML12", tree.RefDomainName, tree.Name);
-            List<DGObject> objList = await repository.GetAllAsync();
-            //DGObject objHelper =
-            //    ObjectHelper.CreateDGObjectFromSubclassName(tree.Name);
-            //Type t = objHelper.GetType();
-            ////C#
-            //Type ct = typeof(List<int>);
-            //Type gt = ct.GetGenericTypeDefinition();
-            ////Make another constructed type
-            ////The List<string> in this case
-            //Type ct2 = gt.MakeGenericType(t);
-
-            //object list= Activator.CreateInstance(ct2, true);//根据类型创建实例
-            //BindingFlags flag = BindingFlags.Instance | BindingFlags.Public;
-            //MethodInfo methodinfo = ct2.GetMethod("AddRange", flag);
-            //foreach (DGObject obj in objList)
+            //foreach (IS3Tree treePanel in _treePanels)
             //{
-            //    methodinfo.Invoke(list, new object[] { });
+            //    treePanel.InitializeTree();
             //}
-
-            MyDataGrid.DGObjectDataGrid.ItemsSource = objList;
-            nowTree = tree;
         }
+        DGObjects _lastDGObjects;
+
+        string layerName;
+
         Tree nowTree;
         DGObject lastOne = null;
 
-        async Task FindDetail()
+        
+       
+
+        void LayoutDoc_Closed(object sender, EventArgs e)
         {
-            List<DGObject> addedObjs = new List<DGObject>();
-            List<DGObject> removedObjs = new List<DGObject>();
-
-            DGObject selectOne = MyDataGrid.DGObjectDataGrid.SelectedItem as DGObject;
-            DGObjectRepository repository = DGObjectRepository.Instance(
-                              "SHML12", nowTree.RefDomainName, nowTree.Name);
-            DGObject obj = await repository.Retrieve(selectOne.id);
-            addedObjs.Add(obj);
-            if (lastOne != null)
-            {
-                removedObjs.Add(lastOne);
-            }
-            lastOne = selectOne;
-            string layerName = "Default";
-            //DataView dataView = MyDataGrid.DGObjectDataGrid.ItemsSource
-            //    as DataView;
-            //if (dataView == null)
-            //    return;
-            //DataTable dataTable = dataView.Table;
-            //DataSet dataSet = dataTable.DataSet;
-            //if (dataSet == null)
-            //    return;
-            //if (!_prj.dataSetIndex.ContainsKey(dataSet))
-            //    return;
-            //DGObjects objs = _prj.dataSetIndex[dataSet];
-            //string layerName = objs.definition.GISLayerName;
-
-            //IList addedItems = e.AddedItems;
-            //IList removedItems = e.RemovedItems;
-
-
-            //foreach (DataRowView drv in addedItems)
-            //{
-            //    DataRow dr = drv.Row;
-            //    if (objs.rowView2Obj.ContainsKey(dr))
-            //    {
-            //        DGObject obj = objs.rowView2Obj[dr];
-            //        addedObjs.Add(obj);
-            //    }
-            //}
-
-            //foreach (DataRowView drv in removedItems)
-            //{
-            //    DataRow dr = drv.Row;
-            //    if (objs.rowView2Obj.ContainsKey(dr))
-            //    {
-            //        DGObject obj = objs.rowView2Obj[dr];
-            //        removedObjs.Add(obj);
-            //    }
-            //}
-
-            if (objSelectionChangedTrigger != null)
-            {
-                Dictionary<string, IEnumerable<DGObject>> addedObjsDict = null;
-                Dictionary<string, IEnumerable<DGObject>> removedObjsDict = null;
-                if (addedObjs.Count > 0)
-                {
-                    addedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
-                    addedObjsDict[layerName] = addedObjs;
-                }
-                if (removedObjs.Count > 0)
-                {
-                    removedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
-                    removedObjsDict[layerName] = removedObjs;
-                }
-                ObjSelectionChangedEventArgs args =
-                    new ObjSelectionChangedEventArgs();
-                args.addedObjs = addedObjsDict;
-                args.removedObjs = removedObjsDict;
-                objSelectionChangedListener(this, args);
-            }
-        }
-        void DGObjectDataGrid_SelectionChanged(object sender, 
-            SelectionChangedEventArgs e)
-        {
-            // Handles selection changed event triggered by user input only.
-            // Selection changed event will also be triggered in 
-            // situations like DGObjectDataGrid.ItemsSource = IEnumerable<>,
-            // but we don't want to handle the event in such conditions.
-            // This can be differentiated by the IsKeyboardFocusWithin property.
-            if (MyDataGrid.IsKeyboardFocusWithin == false
-                || _isEscTriggered)
-                return;
-
-            // Trigger a ObjSelectionChangedEvent event
-            // 
-            FindDetail();
+            LayoutDocument layoutDoc = sender as LayoutDocument;
+            IViewHolder viewHolder = layoutDoc.Content as IViewHolder;
+            IView view = viewHolder.view;
+            RemoveView(view);
         }
 
+        void RemoveView(IView view)
+        {
+            _views.Remove(view);
+        }
         public async Task<IView> addView(EngineeringMap eMap, bool canClose)
         {
             LayoutDocumentPane docPane = FindViewHolder();
@@ -509,7 +438,7 @@ namespace IS3.Desktop
             LayoutDoc.CanClose = canClose;
             LayoutDoc.Closed += LayoutDoc_Closed;
             docPane.Children.Add(LayoutDoc);
-            
+
             string datafilePath, filePath;
             if (_prj != null)
             {
@@ -538,21 +467,22 @@ namespace IS3.Desktop
             }
 
             // view is both a trigger and listener of object selection changed event
-            view.objSelectionChangedTrigger += this.objSelectionChangedListener;
-            this.objSelectionChangedTrigger += view.objSelectionChangedListener;
-            view.initializeView();
+            //view.objSelectionChangedTrigger += this.objSelectionChangedListener;
+            //this.objSelectionChangedTrigger += view.objSelectionChangedListener;
+            await view.initializeView();
 
             // Load predefined layers
-            await view.loadPredefinedLayers();
+            //await view.loadPredefinedLayers();
 
             // Sync view graphics with data
-            view.syncObjects();
+            //view.syncObjects();
 
             _views.Add(view);
             return view;
         }
 
-
+        #endregion
+        #region common event
         // Summary:
         //     Object selection event listener (function).
         //     It will broadcast the event to views and datagrid.
@@ -562,21 +492,17 @@ namespace IS3.Desktop
             if (objSelectionChangedTrigger != null)
                 objSelectionChangedTrigger(sender, e);
         }
-
-        void LayoutDoc_Closed(object sender, EventArgs e)
+       // object _lastDGObjectSelectionChangedSender = null;
+        public void DGObjectsSelectionChangedListener(object sender, DGObjectsSelectionChangedEventArgs e)
         {
-            LayoutDocument layoutDoc = sender as LayoutDocument;
-            IViewHolder viewHolder = layoutDoc.Content as IViewHolder;
-            IView view = viewHolder.view;
-            RemoveView(view);
+            if (sender == null) return;
+            e.oldOne = _lastDGObjects;
+            _lastDGObjects = e.newOne;
+            if (dGObjectsSelectionChangedTrigger != null)
+            {
+                dGObjectsSelectionChangedTrigger(this, e);
+            }
         }
-
-        void RemoveView(IView view)
-        {
-            _views.Remove(view);
-        }
-
-
         #endregion
 
         public void ShowProgressWindow(string message)
@@ -599,29 +525,43 @@ namespace IS3.Desktop
             {
                 if (_prj != null)
                 {
+                    //
+                    //List<DGObject> list = MyDataGrid.DGObjectDataGrid.ItemsSource as List<DGObject>;
+                    //if (list != null)
+                    //{
+                    //    foreach (DGObject obj in list)
+                    //    {
+                    //        obj.IsSelected = false;
+                    //    }
+                    //}
+
+
                     // trigger object selection changed event
-                    Dictionary<string, IEnumerable<DGObject>> selectedObjs =
-                        _prj.getSelectedObjs();
-                    if (objSelectionChangedTrigger != null)
-                    {
-                        ObjSelectionChangedEventArgs args
-                            = new ObjSelectionChangedEventArgs();
-                        args.removedObjs = selectedObjs;
-                        _isEscTriggered = true;
-                        objSelectionChangedTrigger(this, args);
-                        _isEscTriggered = false;
-                    }
+                    //----------------------------
+                    //Dictionary<string, IEnumerable<DGObject>> selectedObjs =
+                    //    _prj.getSelectedObjs();
+                    //if (objSelectionChangedTrigger != null)
+                    //{
+                    //    ObjSelectionChangedEventArgs args
+                    //        = new ObjSelectionChangedEventArgs();
+                    //    args.removedObjs = selectedObjs;
+                    //    _isEscTriggered = true;
+                    //    objSelectionChangedTrigger(this, args);
+                    //    _isEscTriggered = false;
+                    //}
+                    //------------------------
                 }
 
                 // clear selections in all views in case graphics all not cleared.
-                foreach (IView view in views)
-                {
-                    if (view.layers != null)
-                    {
-                        foreach (var layer in view.layers)
-                            layer.highlightAll(false);
-                    }
-                }
+                //------------------------------------
+                //foreach (IView view in views)
+                //{
+                //    if (view.layers != null)
+                //    {
+                //        foreach (var layer in view.layers)
+                //            layer.highlightAll(false);
+                //    }
+                //}
             }
             else if (e.Key == Key.Delete)
             {
@@ -637,46 +577,14 @@ namespace IS3.Desktop
 
         private void Home_Click(object sender, RoutedEventArgs e)
         {
-            Application app = App.Current;
-            IS3MainWindow mw = app.MainWindow as IS3MainWindow;
-            mw.SwitchToProjectListPage();
+            //Application app = App.Current;
+            //IS3MainWindow mw = app.MainWindow as IS3MainWindow;
+            //mw.SwitchToProjectListPage();
         }
 
-        private void Python_Click(object sender, RoutedEventArgs e)
-        {
-            string pyPath = Runtime.rootPath;
-            pyPath = pyPath + "\\IS3Py";
 
-            System.Windows.Forms.OpenFileDialog dlg = 
-                new System.Windows.Forms.OpenFileDialog();
-            dlg.InitialDirectory = pyPath;
-            dlg.Filter = "Python scripts (*.py)|*.py";
-            dlg.DefaultExt = "py";
 
-            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
-            if (result == System.Windows.Forms.DialogResult.OK)
-            {
-                runPythonScripts(dlg.FileName);
-            }
-        }
-
-        // Summary:
-        //     Run python scripts
-        // Remarks:
-        //     The scripts runned here is in the main UI thread, 
-        //     which is different from scripts inputted in the Python
-        //     Console window. In the case of Python Console window,
-        //     the script is runned in another thread. Therefore,
-        //     there is no restriction on calls to main UI thread here.
-        // Known bugs:
-        //     Script call to IS3View.addGdbLayer will hang the program.
-        //     This problem doesn't exist in scripts runned from console window.
-        public void runPythonScripts(string file)
-        {
-            PyManager pyMan = new PyManager();
-            pyMan.run(file);
-        }
-
+        #region loadPlugin
         static List<Assembly> _loadedExtensions = new List<Assembly>();
         // Summary:
         //     Load extensions which are located in the bin\extensions\ directory.
@@ -809,7 +717,9 @@ namespace IS3.Desktop
             PyManager pyMan = new PyManager();
             pyMan.loadPlugins(pyPluginsPath);
         }
+        #endregion
 
+        #region python 
         // Summary:
         //     Write a string to console.
         // Remarks:
@@ -829,6 +739,41 @@ namespace IS3.Desktop
             ipcHost.runStatements(statements);
         }
 
+        private void Python_Click(object sender, RoutedEventArgs e)
+        {
+            string pyPath = Runtime.rootPath;
+            pyPath = pyPath + "\\IS3Py";
+
+            System.Windows.Forms.OpenFileDialog dlg =
+                new System.Windows.Forms.OpenFileDialog();
+            dlg.InitialDirectory = pyPath;
+            dlg.Filter = "Python scripts (*.py)|*.py";
+            dlg.DefaultExt = "py";
+
+            System.Windows.Forms.DialogResult result = dlg.ShowDialog();
+            if (result == System.Windows.Forms.DialogResult.OK)
+            {
+                runPythonScripts(dlg.FileName);
+            }
+        }
+
+        // Summary:
+        //     Run python scripts
+        // Remarks:
+        //     The scripts runned here is in the main UI thread, 
+        //     which is different from scripts inputted in the Python
+        //     Console window. In the case of Python Console window,
+        //     the script is runned in another thread. Therefore,
+        //     there is no restriction on calls to main UI thread here.
+        // Known bugs:
+        //     Script call to IS3View.addGdbLayer will hang the program.
+        //     This problem doesn't exist in scripts runned from console window.
+        public void runPythonScripts(string file)
+        {
+            PyManager pyMan = new PyManager();
+            pyMan.run(file);
+        }
+        #endregion
         #region  load UI
         void loadUI(Assembly assembly)
         {
@@ -866,6 +811,93 @@ namespace IS3.Desktop
                 ProjectPane.Children.Add(layoutAnchorable);
             }
         }
+
+
+        #endregion
+
+
+        #region remove
+        //async Task FindDetail()
+        //{
+        //    //List<int> addedObjs = new List<int>();
+        //    //List<int> removedObjs = new List<int>();
+
+        //    //DGObject selectOne = MyDataGrid.DGObjectDataGrid.SelectedItem as DGObject;
+        //    //DGObjectRepository repository = DGObjectRepository.Instance(
+        //    //                  Globals.project.projDef.ID, nowTree.RefDomainName, nowTree.Name);
+        //    //DGObject obj = await repository.Retrieve(selectOne.id);
+        //    //addedObjs.Add(obj);
+        //    //if (lastOne != null)
+        //    //{
+        //    //    removedObjs.Add(lastOne);
+        //    //}
+        //    //lastOne = selectOne;
+        //    //layerName = Globals.project[nowTree.RefDomainName].GetDef(nowTree.Name).FirstOrDefault().GISLayerName;
+
+        //    //if (objSelectionChangedTrigger != null)
+        //    //{
+        //    //    Dictionary<string, IEnumerable<int>> addedObjsDict = null;
+        //    //    Dictionary<string, IEnumerable<int>> removedObjsDict = null;
+        //    //    if (addedObjs.Count > 0)
+        //    //    {
+        //    //        addedObjsDict = new Dictionary<string, IEnumerable<int>>();
+        //    //        addedObjsDict[layerName] = addedObjs;
+        //    //    }
+        //    //    if (removedObjs.Count > 0)
+        //    //    {
+        //    //        removedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
+        //    //        removedObjsDict[layerName] = removedObjs;
+        //    //    }
+        //    //    ObjSelectionChangedEventArgs args =
+        //    //        new ObjSelectionChangedEventArgs();
+        //    //    args.addedObjs = addedObjsDict;
+        //    //    args.removedObjs = removedObjsDict;
+        //    //    objSelectionChangedListener(this, args);
+        //    //}
+        //}
+        //void treePanel_OnTreeSelected(object sender, Tree tree)
+        //{
+
+        //    if (tree == null)
+        //        MyDataGrid.DGObjectDataGrid.ItemsSource = null;
+        //   // MyDataGrid.DGObjectDataGrid.ItemsSource = tree.ObjectsView;
+        //    _lastSelectedTree = tree;
+
+        //    GetData(tree);
+
+        //}
+
+        //public  async Task GetData(Tree tree)
+        //{
+        //    DGObjectRepository repository = DGObjectRepository.Instance(
+        //         Globals.project.projDef.ID, tree.RefDomainName, tree.Name);
+        //    layerName = Globals.project[tree.RefDomainName].GetDef(tree.Name).FirstOrDefault().GISLayerName;
+        //    List<DGObject> objList = await repository.GetAllAsync();
+        //    foreach (IView view in views)
+        //    {
+        //        int count=view.syncObjects(layerName, objList);
+        //    }
+
+        //    MyDataGrid.DGObjectDataGrid.ItemsSource = objList;
+        //    nowTree = tree;
+        //}
+
+        //void DGObjectDataGrid_SelectionChanged(object sender,
+        //   SelectionChangedEventArgs e)
+        //{
+        //    // Handles selection changed event triggered by user input only.
+        //    // Selection changed event will also be triggered in 
+        //    // situations like DGObjectDataGrid.ItemsSource = IEnumerable<>,
+        //    // but we don't want to handle the event in such conditions.
+        //    // This can be differentiated by the IsKeyboardFocusWithin property.
+        //    if (MyDataGrid.IsKeyboardFocusWithin == false
+        //        || _isEscTriggered)
+        //        return;
+
+        //    // Trigger a ObjSelectionChangedEvent event
+        //    // 
+        //    //FindDetail();
+        //}
         #endregion
     }
 

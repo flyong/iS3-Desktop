@@ -17,6 +17,8 @@ using System.Globalization;
 using System.Collections;
 
 using IS3.Core;
+using System.Collections.ObjectModel;
+using System.Threading;
 
 namespace IS3.Desktop
 {
@@ -39,8 +41,56 @@ namespace IS3.Desktop
     /// Interaction logic for IS3DataGrid.xaml
     /// </summary>
     /// 
-    public partial class IS3DataGrid : UserControl
+    public partial class IS3DataGrid : UserControl, IViewHolder
     {
+        public EventHandler<ObjSelectionChangedEventArgs> objSelectionChangedTrigger;
+        public void DGObjectsSelectionChangedListener(object sender, DGObjectsSelectionChangedEventArgs e)
+        {
+            try
+            {
+                if (sender != this)
+                {
+
+                    GetData(e.newOne);
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+        }
+        public void ObjSelectionChangedListener(object sender, ObjSelectionChangedEventArgs e)
+        {
+            if (sender != this)
+            {
+
+            }
+        }
+        public async Task GetData(DGObjects objs)
+        {
+            DGObjectRepository repository = DGObjectRepository.Instance(
+                 Globals.project.projDef.ID, objs.parent.name, objs.definition.Type);
+
+            //layerName = Globals.project[tree.RefDomainName].GetDef(tree.Name).FirstOrDefault().GISLayerName;
+            List<DGObject> objList = await repository.GetAllAsync();
+            foreach (DGObject obj in objList)
+            {
+                obj.parent = objs;
+            }
+            //foreach (IView view in views)
+            //{
+            //    int count = view.syncObjects(layerName, objList);
+            //}
+            //await DGObjectDataGrid.Dispatcher.BeginInvoke(new Action(() =>
+            // {
+            //     
+            // }));
+
+            //this.DGObjectDataGrid.Dispatcher.Invoke(new updateDelegate(Update), objList);
+           DGObjectDataGrid.ItemsSource = objList;
+        }
+
         protected int _maxColWith = 300;
         //protected ObjectValueConverter _objectConverter
         //    = new ObjectValueConverter();
@@ -48,6 +98,18 @@ namespace IS3.Desktop
         public IS3DataGrid()
         {
             InitializeComponent();
+
+            Loaded += IS3DataGrid_Loaded;
+            _view = new IS3ViewNormal(this);
+
+            _view.DGObjectsSelectionChangedTriggerInner += DGObjectsSelectionChangedListener;
+            objSelectionChangedTrigger += view.objSelectionChangedListenerInner;
+            view.objSelectionChangedTriggerInner += ObjSelectionChangedListener;
+        }
+
+        private void IS3DataGrid_Loaded(object sender, RoutedEventArgs e)
+        {
+            //DGObjectDataGrid.ItemsSource = list;
         }
 
         private void DGObjectDataGrid_AutoGeneratingColumn(object sender,
@@ -123,6 +185,52 @@ namespace IS3.Desktop
             {
                 //_iter.MaxWidth = 300;
             }
+        }
+        DGObject _lastObj = null;
+        protected IView _view;
+        public IView view
+        {
+            get { return _view; }
+        }
+
+        private void DGObjectDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (DGObjectDataGrid.IsKeyboardFocusWithin == false)
+                return;
+            List<DGObject> addedObjs = new List<DGObject>();
+            List<DGObject> removedObjs = new List<DGObject>();
+            DGObject selectOne = DGObjectDataGrid.SelectedItem as DGObject;
+            addedObjs.Add(selectOne);
+            if (_lastObj != null)
+            {
+                removedObjs.Add(_lastObj);
+            }
+            if (objSelectionChangedTrigger != null)
+            {
+                Dictionary<string, IEnumerable<DGObject>> addedObjsDict = null;
+                Dictionary<string, IEnumerable<DGObject>> removedObjsDict = null;
+                if (addedObjs.Count > 0)
+                {
+                    addedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
+                    addedObjsDict[selectOne.parent.definition.Name] = addedObjs;
+                }
+                if (removedObjs.Count > 0)
+                {
+                    removedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
+                    removedObjsDict[_lastObj.parent.definition.Name] = removedObjs;
+                }
+                ObjSelectionChangedEventArgs args =
+                    new ObjSelectionChangedEventArgs();
+                args.addedObjs = addedObjsDict;
+                args.removedObjs = removedObjsDict;
+                objSelectionChangedTrigger(this, args);
+            }
+            _lastObj = selectOne;
+        }
+
+        public void setCoord(string coord)
+        {
+
         }
     }
 }

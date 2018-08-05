@@ -3,8 +3,9 @@ using System.Linq;
 using System.Xml.Linq;
 using System.IO;
 using System.Data;
+using System.Threading.Tasks;
 
-using IS3.Core.Serialization;
+//using IS3.Core.Serialization;
 
 namespace IS3.Core
 {
@@ -48,6 +49,7 @@ namespace IS3.Core
     //
     public class Project
     {
+        public string projectID { get; set; }
         // Summary:
         //     Project definition: gives the information such as where the
         //     database is located, how many domains it has, etc.
@@ -79,31 +81,27 @@ namespace IS3.Core
         // Remarks:
         //      Objects can be access with a layer ID which is specified
         //      in the DGObjectsDefinition.GISLayerName
-        public Dictionary<string, DGObjects> objsLayerIndex { get; set; }
+       // public Dictionary<string, DGObjects> objsLayerIndex { get; set; }
+        public Dictionary<string, DGObjects> objsDefIndex { get; set; }
 
+        public Dictionary<string,List<DGObjects>> objs2DIndex { get; set; }
+        public Dictionary<string,List<DGObjects>> objs3DIndex { get; set; }
+
+        public Dictionary<string,IEnumerable<int>> objSelectedIndex { get; set; }
         // Summary:
         //      Objects table index class
         // Remarks:
         //      Objects can be access with a DataSet (DGObjects.RawDataSet).
-        public Dictionary<DataSet, DGObjects> dataSetIndex { get; set; }
+        //  public Dictionary<DataSet, DGObjects> dataSetIndex { get; set; }
 
         public Project()
         {
             projDef = null;
             _domains = new Dictionary<string, Domain>();
-            objsLayerIndex = new Dictionary<string, DGObjects>();
-            dataSetIndex = new Dictionary<DataSet, DGObjects>();
-        }
-
-        // Summary:
-        //     Find objects with given layer ID
-        //    
-        public DGObjects findObjects(string layerID)
-        {
-            if (objsLayerIndex.ContainsKey(layerID))
-                return objsLayerIndex[layerID];
-            else
-                return null;
+            objsDefIndex = new Dictionary<string, DGObjects>();
+            objSelectedIndex = new Dictionary<string, IEnumerable<int>>();
+            objs2DIndex = new Dictionary<string, List<DGObjects>>();
+            objs3DIndex = new Dictionary<string, List<DGObjects>>();
         }
 
         // Summary:
@@ -146,24 +144,8 @@ namespace IS3.Core
             if (projDef.LocalTilePath == null)
                 projDef.LocalTilePath = Runtime.tilePath;
 
-            if (projDef.DatabaseName1 == null)
-            {
-                projDef.DatabaseName1 = shortName;
-            }
-            else
-            {
-                projDef.DatabaseName1 = IsMdb(projDef.DatabaseName1) ? Runtime.projPath + "\\" + projDef.DatabaseName1 : projDef.DatabaseName1;
-            }
-            if (projDef.DatabaseName2 != null)
-            {
-                projDef.DatabaseName2 = IsMdb(projDef.DatabaseName2) ? Runtime.projPath + "\\" + projDef.DatabaseName2 : projDef.DatabaseName2;
-            }
-            if (projDef.DatabaseName3 != null)
-            {
-                projDef.DatabaseName3 = IsMdb(projDef.DatabaseName3) ? Runtime.projPath + "\\" + projDef.DatabaseName3 : projDef.DatabaseName3;
-            }
             // set dataservice path
-            Globals.iS3Service.DataService.initializeDataService(projDef.DatabaseName1);
+        //    Globals.iS3Service.DataService.initializeDataService(projDef.DatabaseName1);
             // Load domain definition
             IEnumerable<XElement> nodes = root.Elements("Domain");
             foreach (XElement node in nodes)
@@ -178,13 +160,6 @@ namespace IS3.Core
             return true;
         }
 
-        bool IsMdb(string DatabaseName)
-        {
-            if ((DatabaseName.Length > 3) && (DatabaseName.Substring(DatabaseName.Length - 3, 3).ToUpper() == "MDB"))
-                return true;
-            else
-                return false;
-        }
         public override string ToString()
         {
             string domainStr = "";
@@ -198,20 +173,7 @@ namespace IS3.Core
             return str;
         }
 
-        // Summary:
-        //     Get a database context, which is requried to start reading
-        //     objects from database file.
-        //
-        //protected DbContext _dbContext;
-        //public DbContext getDbContext()
-        //{
-        //    // option:
-        //    //  0 - odbc connection (default)
-        //    //  1 - oledb connection
-        //    if (_dbContext == null)
-        //        _dbContext = new DbContext(projDef.LocalDatabaseName, 0);
-        //    return _dbContext;
-        //}
+      
 
         // Summary:
         //     Synchronize objects on the tree.
@@ -248,14 +210,14 @@ namespace IS3.Core
                 if (objs == null)
                     continue;
 
-                if (objs.rawDataSet.Tables.Count == 0)
-                    continue;
+                //if (objs.rawDataSet.Tables.Count == 0)
+                //    continue;
 
-                // Open a view on the table, and apply filter and sort rule on the table
-                //
-                DataTable dt = objs.rawDataSet.Tables[0];
-                DataView dv = new DataView(dt, tree.Filter, tree.Sort, DataViewRowState.CurrentRows);
-                tree.ObjectsView = dv;
+                //// Open a view on the table, and apply filter and sort rule on the table
+                ////
+                //DataTable dt = objs.rawDataSet.Tables[0];
+                //DataView dv = new DataView(dt, tree.Filter, tree.Sort, DataViewRowState.CurrentRows);
+                //tree.ObjectsView = dv;
                 tree.RefObjs = objs;
             }
             return nSync;
@@ -269,7 +231,7 @@ namespace IS3.Core
         //      (2) Load project domain data specifiled in the definition file
         //
         //public static DbContext dbContext;
-        public static Project load(string definitionFile)
+        public static async Task<Project> load(string definitionFile)
         {
             Project prj = new Project();
             IS3.Core.Globals.project = prj;
@@ -279,12 +241,6 @@ namespace IS3.Core
             prj.loadDefinition(definitionFile);
 
             // Load project data
-            //
-            //dbContext = prj.getDbContext();
-            //bool success = dbContext.Open();
-            //if (!success)
-            //    return prj;
-            return prj;
             foreach (Domain domain in prj.domains.Values)
             {
                 // load all objects into domain
@@ -297,12 +253,23 @@ namespace IS3.Core
                 foreach (var def in domain.objsDefinitions)
                 {
                     string defName = def.Key;
-                    string layerID = def.Value.GISLayerName;
-                    if (layerID != null && layerID.Length > 0)
+                    DGObjects objs = domain.objsContainer[defName];
+                    prj.objsDefIndex[defName] = objs;
+                    if ((objs.definition.GISLayerName!=null)&&(objs.definition.GISLayerName.Length>0))
                     {
-                        DGObjects objs = domain.objsContainer[defName];
-                        prj.objsLayerIndex[layerID] = objs;
-                        prj.dataSetIndex[objs.rawDataSet] = objs;
+                        if (!prj.objs2DIndex.ContainsKey(objs.definition.GISLayerName))
+                        {
+                            prj.objs2DIndex[objs.definition.GISLayerName] = new List<DGObjects>();
+                        }
+                        prj.objs2DIndex[objs.definition.GISLayerName].Add(objs);
+                    }
+                    if ((objs.definition.Layer3DName != null) && (objs.definition.Layer3DName.Length > 0))
+                    {
+                        if (!prj.objs3DIndex.ContainsKey(objs.definition.Layer3DName))
+                        {
+                            prj.objs3DIndex[objs.definition.Layer3DName] = new List<DGObjects>();
+                        }
+                        prj.objs3DIndex[objs.definition.Layer3DName].Add(objs);
                     }
                 }
             }
@@ -373,20 +340,20 @@ namespace IS3.Core
             //     set object selection state from object's parent
             //     Method 2 is robust than method 1 because it bypass layer index.
             //
-            //foreach (var objs in selectedObjs.Values)
-            //{
-            //    if (objs.Count() == 0)
-            //        continue;
-            //    DGObjects parent = objs.First().parent;
-            //    foreach (var obj in objs)
-            //    {
-            //        if (parent.obj2RowView.Keys.Contains(obj))
-            //        {
-            //            DataRow dr = parent.obj2RowView[obj];
-            //            dr.SetField<bool>("IsSelected", isSelected);
-            //        }
-            //    }
-            //}
+
+
+                //if (objs.Count() == 0)
+                //    continue;
+                //DGObjects parent = objs.First().parent;
+                //foreach (var obj in objs)
+                //{
+                //    if (parent.obj2RowView.Keys.Contains(obj))
+                //    {
+                //        DataRow dr = parent.obj2RowView[obj];
+                //        dr.SetField<bool>("IsSelected", isSelected);
+                //    }
+                //}
+           // }
         }
 
         // Summary:
@@ -397,24 +364,13 @@ namespace IS3.Core
         // Remarks:
         //     For more info on IsSelected property, 
         //     see remarks of objSelectionChangedListener() function.
-        public Dictionary<string, IEnumerable<DGObject>>
+        public Dictionary<string, IEnumerable<int>>
             getSelectedObjs()
         {
-            Dictionary<string, IEnumerable<DGObject>> selectedObjsDict =
-                new Dictionary<string, IEnumerable<DGObject>>();
 
-            foreach(string layerID in objsLayerIndex.Keys)
-            {
-                DGObjects objs = objsLayerIndex[layerID];
-                List<DGObject> selectedObjs = getSelected(objs);
-                if (selectedObjs != null && selectedObjs.Count > 0)
-                {
-                    selectedObjsDict[layerID] = selectedObjs;
-                }
-            }
-
-            return selectedObjsDict;
+            return objSelectedIndex; ;
         }
+      
 
         // Summary:
         //     Get selected objects of specified object type 
@@ -425,52 +381,23 @@ namespace IS3.Core
         // Remarks:
         //     For more info on IsSelected property, 
         //     see remarks of objSelectionChangedListener() function.
-        public Dictionary<string, IEnumerable<DGObject>>
+        public Dictionary<string, IEnumerable<int>>
             getSelectedObjs(Domain domain, string objType)
         {
-            Dictionary<string, IEnumerable<DGObject>> selectedObjsDict =
-                new Dictionary<string, IEnumerable<DGObject>>();
+            Dictionary<string, IEnumerable<int>> selectedObjsDict =
+                new Dictionary<string, IEnumerable<int>>();
 
-            foreach (DGObjects objs in domain.objsContainer.Values)
+            foreach (string objdefName in objSelectedIndex.Keys)
             {
-                if (objs.definition.Type != objType)
-                    continue;
+                DGObjectsDefinition definition = objsDefIndex[objdefName].definition;
+                if ((objsDefIndex[objdefName].parent.name == domain.name) && (definition.Type == objType))
+                {
+                    selectedObjsDict.Add(objdefName, objSelectedIndex[objdefName]);
+                }
 
-                List<DGObject> selectedObjs = getSelected(objs);
-                string layerID = objs.definition.GISLayerName;
-                if (selectedObjs != null && selectedObjs.Count > 0)
-                    selectedObjsDict[layerID] = selectedObjs;
             }
 
             return selectedObjsDict;
-            //DGObjects objs = domain.getObjects(objType);
-            //if (objs == null)
-            //    return null;
-
-            //List<DGObject> selectedObjs = getSelected(objs);
-            //if (selectedObjs != null && selectedObjs.Count > 0)
-            //    return selectedObjs;
-            //else
-            //    return null;
-        }
-
-        List<DGObject> getSelected(DGObjects objs)
-        {
-            List<DGObject> selectedObjs = new List<DGObject>();
-
-            foreach (DGObject obj in objs.values)
-            {
-                if (objs.obj2RowView.Keys.Contains(obj))
-                {
-                    DataRow dr = objs.obj2RowView[obj];
-                    //if (dr.IsNull("IsSelected"))
-                    //    continue;
-                    bool isSelected = dr.Field<bool>("IsSelected");
-                    if (isSelected)
-                        selectedObjs.Add(obj);
-                }
-            }
-            return selectedObjs;
         }
 
     }

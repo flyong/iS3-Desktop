@@ -44,17 +44,33 @@ namespace IS3.Desktop
 
     public enum ObjectViewType { ChartView, TableView, TextView };
 
-    public partial class ObjectView : UserControl
+    public partial class ObjectView : UserControl,IViewHolder
     {
         Dictionary<string, IEnumerable<DGObject>> _saved;
         TabControl _tabControlSaved;
 
+        protected IView _view;
+        public EventHandler<ObjSelectionChangedEventArgs> objSelectionChangedTrigger;
+
+        public IView view { get { return _view; } }
+
         public ObjectView()
         {
             InitializeComponent();
+
+            _view = new IS3ViewNormal(this);
+            _view.DGObjectsSelectionChangedTriggerInner += DGObjectsSelectionChangedListener;
+            objSelectionChangedTrigger += view.objSelectionChangedListenerInner;
+            view.objSelectionChangedTriggerInner += objSelectionChangedListener;
+
             setViewType(ObjectViewType.ChartView);
 
             SizeChanged += ObjectView_SizeChanged;
+        }
+
+        private void DGObjectsSelectionChangedListener(object sender, DGObjectsSelectionChangedEventArgs e)
+        {
+            
         }
 
         void ObjectView_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -193,72 +209,46 @@ namespace IS3.Desktop
                 };
             window.Show();
         }
-
-        // Summary:
-        //     Object selection event listener.
-        public void objSelectionChangedListener(object sender,
-            ObjSelectionChangedEventArgs e)
+        public async Task GetDetailObj(ObjSelectionChangedEventArgs e)
         {
-            // get current selected objects
-            Dictionary<string, IEnumerable<DGObject>> selectedObjsDict =
-                Globals.project.getSelectedObjs();
+            Dictionary<string, IEnumerable<DGObject>> selectedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
             // process added objs
             if (e.addedObjs != null)
             {
                 foreach (string key in e.addedObjs.Keys)
                 {
-                    if (selectedObjsDict.ContainsKey(key))
+                    IEnumerable<DGObject> objs = e.addedObjs[key];
+                    List<DGObject> objlist = objs.ToList();
+                    DGObjects dGObjects = Globals.project.objsDefIndex[key];
+
+                    List<DGObject> detailObjList = new List<DGObject>();
+                    foreach (DGObject _obj in objlist)
                     {
-                        IEnumerable<DGObject> objs = selectedObjsDict[key];
-                        List<DGObject> objlist = objs.ToList();
-
-                        IEnumerable<DGObject> objsToBeAdded = e.addedObjs[key];
-                        foreach (var obj in objsToBeAdded)
-                        {
-                            if (objlist.Contains(obj))
-                                continue;
-                            else
-                                objlist.Add(obj);
-                        }
-
-                        selectedObjsDict[key] = objlist.AsEnumerable();
+                        DGObjectRepository repository = DGObjectRepository.Instance(
+                                          Globals.project.projDef.ID, _obj.parent.parent.name, _obj.parent.definition.Type);
+                        DGObject obj = await repository.Retrieve(_obj.id);
+                        obj.parent = dGObjects;
+                        detailObjList.Add(obj);
                     }
-                    else
-                        selectedObjsDict.Add(key, e.addedObjs[key]);
+                    selectedObjsDict[key] = detailObjList.AsEnumerable();
                 }
             }
-            // process removed objects
-            if (e.removedObjs != null)
-            {
-                foreach (string key in e.removedObjs.Keys)
-                {
-                    if (selectedObjsDict.ContainsKey(key))
-                    {
-                        IEnumerable<DGObject> objs = selectedObjsDict[key];
-                        List<DGObject> objlist = objs.ToList();
-
-                        IEnumerable<DGObject> objsToBeRemoved = e.removedObjs[key];
-                        foreach (var obj in objsToBeRemoved)
-                            objlist.Remove(obj);
-
-                        selectedObjsDict[key] = objlist.AsEnumerable();
-                    }
-                }
-            }
-
             _saved = selectedObjsDict;
-            //foreach (string key in selectedObjsDict.Keys)
-            //{
-            //    IEnumerable<DGObject> objs = selectedObjsDict[key];
-            //    if (objs.Count() > 0)
-            //    {
-            //        objs.First().parent.LoadObjs_Detail(objs.ToList());
-            //    }
-            //}
-            // 
+
             refreshTextView(selectedObjsDict);
-           // refreshTableView(selectedObjsDict);
+            //refreshTableView(selectedObjsDict);
             refreshChartViewAsync(selectedObjsDict);
+            // //------------------------
+
+        }
+        // Summary:
+        //     Object selection event listener.
+        public void objSelectionChangedListener(object sender,
+            ObjSelectionChangedEventArgs e)
+        {
+            // // get current selected objects
+            // //----------------------------
+            GetDetailObj(e);
         }
 
         void refreshTextView(
@@ -439,6 +429,11 @@ namespace IS3.Desktop
 
             if (chartViewHolder.SelectedIndex == -1)
                 chartViewHolder.SelectedIndex = 0;
+        }
+
+        public void setCoord(string coord)
+        {
+            
         }
     }
 }

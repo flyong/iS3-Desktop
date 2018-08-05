@@ -10,6 +10,7 @@
     xmlns:IS3Desktop="clr-namespace:IS3.Desktop"
     xmlns:IS3Controls="clr-namespace:IS3.Desktop.UserControls"
     xmlns:IS3Python="clr-namespace:IS3.Python;assembly=IS3.Python"
+     xmlns:control="clr-namespace:IS3.Control;assembly=IS3.Control"
     mc:Ignorable="d" 
     d:DesignHeight="300" d:DesignWidth="800">
     <UserControl.Resources>
@@ -161,8 +162,8 @@
                                 <xcad:LayoutAnchorable Title="Data List"
                                                        ContentId="DataList"
                                                        CanClose="False">
-                                    <IS3Desktop:IS3DataGrid x:Name="MyDataGrid">
-                                    </IS3Desktop:IS3DataGrid>
+                                    <control:IS3DataGrid x:Name="MyDataGrid">
+                                    </control:IS3DataGrid>
                                 </xcad:LayoutAnchorable>
                             </xcad:LayoutDocumentPane>
                         </xcad:LayoutDocumentPaneGroup>
@@ -179,14 +180,14 @@
                                                        Title="Object View"
                                                        CanHide="True"
                                                        CanClose="True" >
-                                    <IS3Desktop:ObjectView x:Name="objectView"/>
+                                    <control:ObjectView x:Name="objectView"/>
                                 </xcad:LayoutAnchorable>
                                 <xcad:LayoutAnchorable x:Name="Tools"
                                                        ContentId="Tools"
                                                        Title="Tools"
                                                        CanHide="True"
                                                        CanClose="True" >
-                                    <IS3Desktop:ToolsPanel x:Name="ToolsPanel"/>
+                                    <control:ToolsPanel x:Name="ToolsPanel"/>
                                 </xcad:LayoutAnchorable>
                             </xcad:LayoutAnchorablePane>
 

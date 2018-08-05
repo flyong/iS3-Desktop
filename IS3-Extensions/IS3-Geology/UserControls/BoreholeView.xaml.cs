@@ -24,7 +24,7 @@ namespace IS3.Geology.UserControls
         }
 
         public double ScaleY { get; set; }
-        public DGObjectsCollection Strata { get; set; }
+        public List<DGObject> Strata { get; set; }
         public Borehole Borehole { get; set; }
         public bool IsEmpty { get; set; }
         public double BH_Width { get; set; }
@@ -80,7 +80,7 @@ namespace IS3.Geology.UserControls
                 tbStratumName.Foreground = blueBrush;
                 if (Strata != null)
                 {
-                    Stratum stratum = Strata[bhGeo.StratumID] as Stratum;
+                    Stratum stratum = Strata.Where(x=>x.ID==bhGeo.StratumID).FirstOrDefault() as Stratum;
                     tbStratumName.Text = stratum.name;
                 }
                 else

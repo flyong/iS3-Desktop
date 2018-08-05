@@ -32,6 +32,7 @@ namespace IS3.Desktop
     /// </summary>
     public partial class TreePanel : UserControl
     {
+        public EventHandler<DGObjectsSelectionChangedEventArgs> dGObjectsSelectionChangedEventTriggle;
         protected IS3Tree _is3Tree;
         public IS3Tree IS3Tree
         {
@@ -48,8 +49,26 @@ namespace IS3.Desktop
         private void DomainTreeView_SelectedItemChanged(object sender,
             RoutedPropertyChangedEventArgs<object> e)
         {
-            if (OnTreeSelected != null)
-                OnTreeSelected(this, e.NewValue as Tree);
+            //if (OnTreeSelected != null)
+            //    OnTreeSelected(this, e.NewValue as Tree);
+
+            if (dGObjectsSelectionChangedEventTriggle != null)
+            {
+                DGObjectsSelectionChangedEventArgs args = new DGObjectsSelectionChangedEventArgs();
+                if (((e.NewValue as Tree) == null) ||((e.NewValue as Tree).RefObjsName==null))
+                {
+                    args.newOne = null;
+                }
+                else
+                {
+                    string dgObjectsName = (e.NewValue as Tree).RefObjsName;
+                    if (Globals.project.objsDefIndex.ContainsKey(dgObjectsName))
+                    {
+                        args.newOne = Globals.project.objsDefIndex[dgObjectsName];
+                    }
+                }
+                dGObjectsSelectionChangedEventTriggle(this, args);
+            }
         }
     }
 }

@@ -3,9 +3,10 @@ using System.Data;
 using System.Collections.Generic;
 using System.Windows;
 
-using IS3.Core.Serialization;
+//using IS3.Core.Serialization;
 using IS3.Core.Shape;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace IS3.Core
 {
@@ -44,15 +45,12 @@ namespace IS3.Core
     //     (5) If DGObject is readed from ArcGIS geodatabase, it can handle
     //         shape objects, see ShapeObject for more info.
     //
-    public class DGObject
+    public class DGObject:INotifyPropertyChanged
     {
         protected int _id;
         protected string _name;
         protected string _fullname;
         protected string _desc;
-
-        // raw data from database
-        protected DataRow _rawData;
 
         // shape for the object
         protected ShapeObject _shp;
@@ -77,25 +75,21 @@ namespace IS3.Core
             get { return _parent; }
             set { _parent = value; }
         }
-
         // constructor
         public DGObject()
         {
         }
-        public DGObject(DataRow rawData)
-        {
-            _rawData = rawData;
-        }
-
+        public int ID { get; set; }
         public int id 
         {
-            get { return _id; }
-            set { _id = value; }
+            get { return ID; }
+            set { ID = value; }
         }
+        public string Name { get; set; }
         public string name 
         {
-            get { return _name; }
-            set { _name = value; }
+            get { return Name; }
+            set { Name = value; }
         }
         public string fullName 
         {
@@ -108,44 +102,20 @@ namespace IS3.Core
             set { _desc = value; }
         }
 
-        public DataRow rawData
+        private bool isSelected = false;
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public bool IsSelected
         {
-            get { return _rawData; }
+            get { return isSelected; }
+            set { isSelected = value;
+                if (PropertyChanged != null)
+                {
+                    PropertyChanged(this, new PropertyChangedEventArgs("IsSelected"));
+                }
+            }
         }
-
-
-        // Summary:
-        //    Load objects from database
-        //public virtual bool LoadObjs(DGObjects objs, DbContext dbContext)
-        //{
-        //    DGObjectLoader loader2 = new DGObjectLoader(dbContext);
-        //    bool success = loader2.Load(objs);
-        //    return success;
-        //}
-        public virtual bool LoadObjs(DGObjects objs)
-        {
-            //DGObjectLoader loader2 = new DGObjectLoader(dbContext);
-            DGObjectLoader loader2 = new DGObjectLoader();
-            bool success = loader2.Load(objs);
-            return success;
-        }
-        // mark if load detail infomation
-        //public bool hasLoadDetail = false;
-
-        //// Raw DataSet that is readed from database
-        //public DataSet rawDataSet_Detail { get; set; }
-
-        ////Summary
-        ////   Step Load Object Detail infomation from database
-
-        //public virtual bool LoadObj_Detail(DbContext dbContext)
-        //{
-        //    DbDataLoader loader = new DbDataLoader(dbContext);
-        //    bool success = loader.ReadRawDataDetail(this);
-        //    return success;
-        //}
-
-
         public override string ToString()
         {
             return string.Format("id={0}, name={1}", id, name);
@@ -191,11 +161,5 @@ namespace IS3.Core
             return null;
         }
 
-    }
-
-    // DGEntity will be removed soon.
-    // Use DGObject instead.
-    public class DGEntity : DGObject
-    {
     }
 }

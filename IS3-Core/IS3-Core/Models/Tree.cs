@@ -65,7 +65,7 @@ namespace IS3.Core
         public string Sort { get; set; }
 
         // The filtered and sorted view of reference objects.
-        public DataView ObjectsView { get; set; }
+        //public DataView ObjectsView { get; set; }
 
         // get the reference DGObjects, i.e., the whole object collection
         public DGObjects RefObjs { get; set; }

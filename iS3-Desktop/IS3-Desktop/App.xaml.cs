@@ -13,11 +13,14 @@ using System.Windows.Media;
 using System.Reflection;
 
 using IS3.Core;
-using IS3.Core.Serialization;
+//using IS3.Core.Serialization;
 using IS3.ArcGIS.Graphics;
 using IS3.ArcGIS.Geometry;
 
 using IS3.Desktop.Properties;
+using Telerik.Windows.Controls;
+using System.Xml.Linq;
+
 namespace IS3.Desktop
 {
     /// <summary>
@@ -25,27 +28,12 @@ namespace IS3.Desktop
     /// </summary>
     public partial class App : Application
     {
-        MainFrame _mainFrame;
+        //MainFrame _mainFrame;
         string _sysDataDir = @"..\..\Data";
 
         static IS3GraphicEngine _graphicEngine = new IS3GraphicEngine();
         static IS3GeometryEngine _geometryEngine = new IS3GeometryEngine();
 
-        public MainFrame MainFrame
-        {
-            get { return _mainFrame; }
-            set { _mainFrame = value; }
-        }
-        public Project Project
-        {
-            get
-            {
-                if (_mainFrame != null)
-                    return _mainFrame.prj;
-                else
-                    return null;
-            }
-        }
         public string SysDataDir { get { return _sysDataDir; } }
 
         public App()
@@ -53,7 +41,62 @@ namespace IS3.Desktop
             Startup += App_Startup;
             Exit += App_Exit;
         }
+        void Application_Startup(object sender, StartupEventArgs e)
+        {
+            StyleManager.ApplicationTheme = new Windows8Theme();
+            Globals.iS3Core = new IS3RuntimeControl();
 
+            XDocument xml = XDocument.Load(Runtime.configurationPath);
+            string version = xml.Root.Element("Version").Value;
+            if (version == "Normal")
+            {
+                //Normal Style
+                Globals.iS3Core.SetPageHolder(new IS3.Control.IS3MainWindow());
+                Globals.iS3Core.SetProjectList(new IS3.Control.ProjectListPage());
+                Globals.iS3Core.SetMainFrame(new IS3.Control.MainFrame("TONGJI"));
+            }
+            else
+            {
+                //Telerik Style
+                Globals.iS3Core.SetPageHolder(new IS3.Control.IS3MainWindowTelerik());
+                Globals.iS3Core.SetProjectList(new IS3.Control.ProjectListPageTelerik());
+                Globals.iS3Core.SetMainFrame(new IS3.Control.MainFrameByTelerik("TONGJI"));
+            }
+            Globals.iS3Core.SetPageTransition(new IS3.Control.WpfPageTransitions.PageTransition());
+            Globals.iS3Core.MainWindowShow();
+            Globals.iS3Core.SetLogin(new IS3.Control.UserLoginPage());
+
+            Globals.iS3Core.SetPageShow(PageType.LoginPage);
+            
+            try
+            {
+                string exeLocation = Assembly.GetExecutingAssembly().Location;
+                string exePath = System.IO.Path.GetDirectoryName(exeLocation);
+                DirectoryInfo di = System.IO.Directory.GetParent(exePath);
+                string rootPath = di.FullName;
+                string dataPath = rootPath + "\\Data";
+                string tilePath = dataPath + "\\TPKs";
+                Runtime.rootPath = rootPath;
+                Runtime.dataPath = dataPath;
+                Runtime.tilePath = tilePath;
+                Runtime.servicePath = rootPath + "\\bin\\Servers";
+                Runtime.configurationPath = rootPath + "\\IS3-Configuration\\ServiceConfig.xml";
+
+                //ArcGISRuntime.Initialize();
+                Runtime.initializeEngines(_graphicEngine, _geometryEngine);
+                Globals.application = this;
+                Globals.mainthreadID = Thread.CurrentThread.ManagedThreadId;
+                //Globals.iS3Service = ServiceImporter.LoadService(Runtime.servicePath);
+                //test();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString());
+
+                // Exit application
+                this.Shutdown();
+            }
+        }
         void App_Startup(object sender, StartupEventArgs e)
         {
             try
@@ -68,13 +111,13 @@ namespace IS3.Desktop
                 Runtime.dataPath = dataPath;
                 Runtime.tilePath = tilePath;
                 Runtime.servicePath = rootPath + "\\bin\\Servers";
-                Runtime.configurationPath = rootPath + "\\IS3-Configuration\\DBconfig.xml";
+                Runtime.configurationPath = rootPath + "\\IS3-Configuration\\ServiceConfig.xml";
 
                 //ArcGISRuntime.Initialize();
                 Runtime.initializeEngines(_graphicEngine, _geometryEngine);
                 Globals.application = this;
                 Globals.mainthreadID = Thread.CurrentThread.ManagedThreadId;
-                Globals.iS3Service = ServiceImporter.LoadService(Runtime.servicePath);
+                //Globals.iS3Service = ServiceImporter.LoadService(Runtime.servicePath);
                 //test();
             }
             catch (Exception ex)

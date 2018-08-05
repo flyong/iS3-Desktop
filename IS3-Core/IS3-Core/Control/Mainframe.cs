@@ -37,6 +37,7 @@ namespace IS3.Core
     //
     public interface IMainFrame
     {
+        string projectID { get; set; }
         // Summary:
         //     prj: the model
         Project prj { get; }
@@ -84,6 +85,10 @@ namespace IS3.Core
         //     this event will be triggered.
         event EventHandler<ObjSelectionChangedEventArgs>
             objSelectionChangedTrigger;
+        void objSelectionChangedListener(object sender, ObjSelectionChangedEventArgs e);
+        event EventHandler<DGObjectsSelectionChangedEventArgs>
+            dGObjectsSelectionChangedTrigger;
+        void DGObjectsSelectionChangedListener(object sender, DGObjectsSelectionChangedEventArgs e);
 
         // Summary:
         //     Project loaded event

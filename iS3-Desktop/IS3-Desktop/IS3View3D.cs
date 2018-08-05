@@ -35,24 +35,31 @@ namespace IS3.Desktop
     //** These rights are included in the file LGPL_EXCEPTION.txt in this package.
     //**
     //**************************************************************************
-    public class IS3View3D : IS3ViewBase, IView
+    public class IS3View3D : IS3ViewBase,IView3D
     {
         #region IView interface
         public ViewType type { get { return ViewType.General3DView; } }
-        public IEnumerable<IGraphicsLayer> layers { get { return null; } }
-        public IGraphicsLayer drawingLayer { get { return null; } }
-        public ISpatialReference spatialReference { get { return null; } }
-        public void initializeView() { }
+
+        public ViewBaseType baseType
+        {
+            get { return ViewBaseType.D3; }
+        }
+
+        public UserControl parent => throw new NotImplementedException();
+
+        public async Task initializeView() {
+            Load3DScene();
+        }
 
         public void onClose() { }
 
         public void highlightObject(DGObject obj, bool on = true)
         {
-            if (obj == null || obj.parent == null || (obj.parent.definition.Has3D==false))
-                return;
+            //if (obj == null || obj.parent == null || (obj.parent.definition.Has3D==false))
+            //    return;
 
             SetObjSelectStateMessage message = new SetObjSelectStateMessage();
-            message.path = obj.parent.definition.Layer3DName + "/" + obj.fullName;
+            message.path = "iS3Project/Borehole/" + obj.id;
             message.iSSelected = on;
             ExcuteCommand(message);
         }
@@ -68,72 +75,38 @@ namespace IS3.Desktop
         { }
         public void highlightAll(bool on = true) { }
 
-        public IMapPoint screenToLocation(System.Windows.Point screenPoint)
-        { return null; }
-        public System.Windows.Point locationToScreen(IMapPoint mapPoint)
-        { return new System.Windows.Point(); }
-
-        public void addSeletableLayer(string layerID) { }
-        public void removeSelectableLayer(string layerID) { }
-
-        public void zoomTo(IGeometry geom) { }
-
-        public void addLayer(IGraphicsLayer layer) { }
-        public IGraphicsLayer getLayer(string layerID)
-        {
-            return null;
-        }
-        public IGraphicsLayer removeLayer(string layerID)
-        {
-            return null;
-        }
-
-        public void addLocalTiledLayer(string filePath, string id) { }
-        public Task<IGraphicsLayer> addGdbLayer(LayerDef layerDef,
-            string dbFile, int start = 0, int maxFeatures = 0)
-        {
-            return null;
-        }
-
-        public Task<IGraphicsLayer> addShpLayer(LayerDef layerDef,
-            string shpFile, int start = 0, int maxFeatures = 0)
-        {
-            return null;
-        }
-
-
-        public int syncObjects()
-        {
-            return 0;
-        }
-        public async Task loadPredefinedLayers()
-        {
-            Load3DScene();
-        }
         public void objSelectionChangedListener(object sender,
             ObjSelectionChangedEventArgs e)
         {
             if (sender == this)
                 return;
 
-            if (e.addedObjs != null)
-            {
-                foreach (string layerID in e.addedObjs.Keys)
-                    highlightObjects(e.addedObjs[layerID], true);
+            //if (e.addedObjs != null)
+            //{
+            //    foreach (string layerID in e.addedObjs.Keys)
+            //        highlightObjects(e.addedObjs[layerID], true);
 
-            }
-            if (e.removedObjs != null)
-            {
-                foreach (string layerID in e.removedObjs.Keys)
-                    highlightObjects(e.removedObjs[layerID], false);
-            }
+            //}
+            //if (e.removedObjs != null)
+            //{
+            //    foreach (string layerID in e.removedObjs.Keys)
+            //        highlightObjects(e.removedObjs[layerID], false);
+            //}
         }
         public event EventHandler<ObjSelectionChangedEventArgs>
             objSelectionChangedTrigger;
         public event EventHandler<DrawingGraphicsChangedEventArgs>
             drawingGraphicsChangedTrigger;
+        public event EventHandler<DGObjectsSelectionChangedEventArgs> DGObjectsSelectionChangedTrigger;
+        public event EventHandler<DGObjectsSelectionChangedEventArgs> DGObjectsSelectionChangedTriggerOuter;
+        public event EventHandler<ObjSelectionChangedEventArgs> objSelectionChangedTriggerOuter;
+        public event EventHandler<DGObjectsSelectionChangedEventArgs> DGObjectsSelectionChangedTriggerInner;
+        public event EventHandler<ObjSelectionChangedEventArgs> objSelectionChangedTriggerInner;
         #endregion
-
+        public void DGObjectsSelectionChangedListener(object sender, DGObjectsSelectionChangedEventArgs e)
+        {
+            
+        }
 
         U3DPlayerAxLib.U3DPlayerControl _u3dPlayerControl;
 
@@ -194,40 +167,41 @@ namespace IS3.Desktop
                                 string _path = _message.path;
                                 int id = int.Parse(_path.Split('/')[_path.Split('/').Length - 1]);
                                 bool isSelected = _message.iSSelected;
-                                DGObject obj = null;
-                                foreach (string key in prj.objsLayerIndex.Keys)
-                                {
-                                    DGObjects objs = prj.objsLayerIndex[key];
-                                    if ((objs.definition.Has3D) && (_path.StartsWith(objs.definition.Layer3DName)))
-                                    {
-                                        foreach (DGObject _obj in objs.values)
-                                        {
-                                            if (_obj.fullName == id.ToString())
-                                            {
-                                                obj = _obj;
-                                                break;
-                                            }
-                                        }
+                                ShowSelect(id, isSelected);
+                                
+                                //foreach (string key in prj.objsLayerIndex.Keys)
+                                //{
+                                //    DGObjects objs = prj.objsLayerIndex[key];
+                                //    if ((objs.definition.Has3D) && (_path.StartsWith(objs.definition.Layer3DName)))
+                                //    {
+                                //        foreach (DGObject _obj in objs.values)
+                                //        {
+                                //            if (_obj.id == id)
+                                //            {
+                                //                obj = _obj;
+                                //                break;
+                                //            }
+                                //        }
 
-                                    }
-                                }
-                                if (obj != null && objSelectionChangedTrigger != null)
-                                {
-                                    ObjSelectionChangedEventArgs args = new ObjSelectionChangedEventArgs();
-                                    if (isSelected)
-                                    {
-                                        args.addedObjs = new Dictionary<string, IEnumerable<DGObject>>();
-                                        List<DGObject> objs = new List<DGObject>() { obj };
-                                        args.addedObjs.Add(obj.parent.definition.GISLayerName, objs);
-                                    }
-                                    else
-                                    {
-                                        args.removedObjs = new Dictionary<string, IEnumerable<DGObject>>();
-                                        List<DGObject> objs = new List<DGObject>() { obj };
-                                        args.removedObjs.Add(obj.parent.definition.GISLayerName, objs);
-                                    }
-                                    objSelectionChangedTrigger(this, args);
-                                }
+                                //    }
+                                //}
+                                //if (obj != null && objSelectionChangedTrigger != null)
+                                //{
+                                //    ObjSelectionChangedEventArgs args = new ObjSelectionChangedEventArgs();
+                                //    if (isSelected)
+                                //    {
+                                //        args.addedObjs = new Dictionary<string, IEnumerable<DGObject>>();
+                                //        List<DGObject> objs = new List<DGObject>() { obj };
+                                //        args.addedObjs.Add(obj.parent.definition.GISLayerName, objs);
+                                //    }
+                                //    else
+                                //    {
+                                //        args.removedObjs = new Dictionary<string, IEnumerable<DGObject>>();
+                                //        List<DGObject> objs = new List<DGObject>() { obj };
+                                //        args.removedObjs.Add(obj.parent.definition.GISLayerName, objs);
+                                //    }
+                                //    objSelectionChangedTrigger(this, args);
+                                //}
                                 break;
                             case MessageType.SetObjShowState:
                                 break;
@@ -238,6 +212,47 @@ namespace IS3.Desktop
             }
             catch { }
 
+        }
+        DGObject lastOne = null;
+        public async Task ShowSelect(int id,bool isselected)
+        {
+            List<DGObject> addedObjs = new List<DGObject>();
+            List<DGObject> removedObjs = new List<DGObject>();
+            DGObjectRepository repository = DGObjectRepository.Instance(
+                                 Globals.project.projDef.ID, "Geology", "Borehole");
+            DGObject obj = await repository.Retrieve(id);
+            addedObjs.Add(obj);
+            if (lastOne != null)
+            {
+                removedObjs.Add(lastOne);
+            }
+            lastOne = obj;
+            string layerName = Globals.project["Geology"].GetDef("Borehole").FirstOrDefault().GISLayerName;
+
+            if (objSelectionChangedTrigger != null)
+            {
+                Dictionary<string, IEnumerable<DGObject>> addedObjsDict = null;
+                Dictionary<string, IEnumerable<DGObject>> removedObjsDict = null;
+                if (addedObjs.Count > 0)
+                {
+                    addedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
+                    addedObjsDict[layerName] = addedObjs;
+                }
+                if (removedObjs.Count > 0)
+                {
+                    removedObjsDict = new Dictionary<string, IEnumerable<DGObject>>();
+                    removedObjsDict[layerName] = removedObjs;
+                }
+                ObjSelectionChangedEventArgs args =
+                    new ObjSelectionChangedEventArgs();
+                args.addedObjs = addedObjsDict;
+                args.removedObjs = removedObjsDict;
+                if (objSelectionChangedTrigger != null)
+                {
+                    objSelectionChangedTrigger(this, args);
+                }
+
+            }
         }
         public void ExcuteCommand(iS3UnityMessage message)
         {
@@ -317,6 +332,39 @@ namespace IS3.Desktop
             result = Globals.project.projDef.ID + "+" + result;
             return result;
         }
+
+        public int syncObjects(string layerID, List<DGObject> objs)
+        {
+            return 0;
+        }
+
+        public void load()
+        {
+           
+        }
+
+
+        public void DGObjectsSelectionChangedListenerOuter(object sender, DGObjectsSelectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void objSelectionChangedListenerOuter(object sender, ObjSelectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DGObjectsSelectionChangedListenerInner(object sender, DGObjectsSelectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void objSelectionChangedListenerInner(object sender, ObjSelectionChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
 
         #endregion

@@ -87,16 +87,6 @@
       <HintPath>..\..\bin\AxInterop.UnityWebPlayerAXLib.dll</HintPath>
     </Reference>
     <Reference Include="Esri.ArcGISRuntime, Version=10.2.5.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL" />
-    <Reference Include="IS3.ArcGIS, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\IS3.ArcGIS.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="IS3.Core, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\IS3.Core.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="IS3.Python, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\IS3.Python.dll</HintPath>
@@ -113,6 +103,27 @@
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Telerik.Windows.Controls.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7" />
+    <Reference Include="Telerik.Windows.Themes.Fluent, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Telerik.Windows.Themes.Fluent.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Themes.Material, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Telerik.Windows.Themes.Material.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Themes.Office2016, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Telerik.Windows.Themes.Office2016.dll</HintPath>
+    </Reference>
+    <Reference Include="Telerik.Windows.Themes.VisualStudio2013, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\bin\Telerik.Windows.Themes.VisualStudio2013.dll</HintPath>
     </Reference>
     <Reference Include="U3DPlayerAxLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -159,174 +170,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="IS3DataGrid.xaml.cs">
-      <DependentUpon>IS3DataGrid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="IS3ProfileView.cs" />
-    <Compile Include="IS3View.cs" />
-    <Compile Include="IS3View3D.cs" />
-    <Compile Include="IS3ViewBase.cs" />
-    <Compile Include="Pages\MainFrame.xaml.cs">
-      <DependentUpon>MainFrame.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ObjectView.xaml.cs">
-      <DependentUpon>ObjectView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="PlanView.xaml.cs">
-      <DependentUpon>PlanView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ProfileView.xaml.cs">
-      <DependentUpon>ProfileView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\ProjectListPage.xaml.cs">
-      <DependentUpon>ProjectListPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="IS3Tree.cs" />
     <Compile Include="Properties\Resource1.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resource1.resx</DependentUpon>
     </Compile>
-    <Compile Include="ToolsPanel.xaml.cs">
-      <DependentUpon>ToolsPanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="TreePanel.xaml.cs">
-      <DependentUpon>TreePanel.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="U3DView.xaml.cs">
-      <DependentUpon>U3DView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UnityMessageConvert.cs" />
-    <Compile Include="UserControls\LayersWindow.xaml.cs">
-      <SubType>Code</SubType>
-      <DependentUpon>LayersWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\DrawToolControl.xaml.cs">
-      <DependentUpon>DrawToolControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\EditELayerWindow.xaml.cs">
-      <DependentUpon>EditELayerWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\EditEMapWindow.xaml.cs">
-      <DependentUpon>EditEMapWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\MapTip.xaml.cs">
-      <DependentUpon>MapTip.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\ProgressBarWindow.xaml.cs">
-      <DependentUpon>ProgressBarWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\ProjectDetailInfo.xaml.cs">
-      <DependentUpon>ProjectDetailInfo.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\RaisedText.xaml.cs">
-      <DependentUpon>RaisedText.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserControls\SelectionToolbar.xaml.cs">
-      <DependentUpon>SelectionToolbar.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Pages\UserLoginPage.xaml.cs">
-      <DependentUpon>UserLoginPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UserPreferences.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="IS3DataGrid.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\MainFrame.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="IS3MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="IS3MainWindow.xaml.cs">
-      <DependentUpon>IS3MainWindow.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Page Include="ObjectView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="PlanView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="ProfileView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\ProjectListPage.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\MenuStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Themes\Generic.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="ToolsPanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="TreePanel.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="U3DView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\LayersWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\DrawToolControl.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\EditELayerWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\EditEMapWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\MapTip.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\ProgressBarWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\ProjectDetailInfo.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UserControls\RaisedText.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="UserControls\SelectionToolbar.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Pages\UserLoginPage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs">
@@ -356,9 +208,6 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\window_new.png" />
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -380,6 +229,7 @@
     <Resource Include="Images\applications_engineering-large.png" />
     <Resource Include="Images\applications_engineering.png" />
     <Resource Include="Images\attachment.png" />
+    <Resource Include="Images\Background.jpg" />
     <Resource Include="Images\binary-digital-globe.jpg" />
     <Resource Include="Images\blue_globe.png" />
     <Resource Include="Images\category.png" />
@@ -410,13 +260,19 @@
     <Resource Include="Images\engineering_128_hot.png" />
     <Resource Include="Images\expand.png" />
     <Resource Include="Images\export-excel-icon.png" />
+    <Resource Include="Images\folder_add.png" />
+    <Resource Include="Images\folder_delete.png" />
+    <Resource Include="Images\folder_edit.png" />
+    <Resource Include="Images\folder_new.png" />
     <Resource Include="Images\Fullscreen-32.png" />
+    <Resource Include="Images\Geology-16.png" />
     <Resource Include="Images\Geology-32.png" />
     <Resource Include="Images\GeologyAnalysis-32.png" />
     <Resource Include="Images\GeologyProfile.png" />
     <Resource Include="Images\get_info.png" />
     <Resource Include="Images\Home-48.png" />
     <Resource Include="Images\HorizontalProjection.png" />
+    <Resource Include="Images\house-16.png" />
     <Resource Include="Images\house-48.png" />
     <Resource Include="Images\i_about.png" />
     <Resource Include="Images\i_clickglobe.png" />
@@ -435,6 +291,7 @@
     <Resource Include="Images\layers-48.png" />
     <Resource Include="Images\light-16.png" />
     <Resource Include="Images\light.png" />
+    <Resource Include="Images\loginback.jpg" />
     <Resource Include="Images\logo.png" />
     <Resource Include="Images\maintenace-32.png" />
     <Resource Include="Images\maintenace-48.png" />
@@ -445,7 +302,11 @@
     <Resource Include="Images\Node.png" />
     <Resource Include="Images\Objects.png" />
     <Resource Include="Images\package_graphics.png" />
+    <Resource Include="Images\pen.png" />
+    <Resource Include="Images\pIcon32.png" />
+    <Resource Include="Images\pIcon64.png" />
     <Resource Include="Images\pin_red.png" />
+    <Resource Include="Images\placeholder32.png" />
     <Resource Include="Images\ProjectMapLayer.png" />
     <Resource Include="Images\projects-16.png" />
     <Resource Include="Images\projects-32.png" />
@@ -453,12 +314,15 @@
     <Resource Include="Images\projects_folder_32.png" />
     <Resource Include="Images\projects_folder_48.png" />
     <Resource Include="Images\properties.png" />
+    <Resource Include="Images\Python-48.png" />
+    <Resource Include="Images\rotate_left.png" />
     <Resource Include="Images\selection.png" />
     <Resource Include="Images\Setting-icon.png" />
     <Resource Include="Images\Settlement.png" />
     <Resource Include="Images\StopDraw.png" />
     <Resource Include="Images\Subcategory.png" />
     <Resource Include="Images\TBM.png" />
+    <Resource Include="Images\text.png" />
     <Resource Include="Images\Tunnel-32.png" />
     <Resource Include="Images\TunnelAnalysis-32.png" />
     <Resource Include="Images\TunnelAxis-32.png" />
@@ -479,51 +343,31 @@
     <Resource Include="Images\window-full-screen-icon.png" />
     <Resource Include="Images\window-no-full-screen-icon.png" />
     <Resource Include="Images\Windows-Table-icon.png" />
+    <Resource Include="Images\window_new.png" />
     <Resource Include="Images\xcode_project_icon-1306152857.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Geology-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\house-16.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\folder_add.png" />
-    <Resource Include="Images\folder_delete.png" />
-    <Resource Include="Images\folder_edit.png" />
-    <Resource Include="Images\folder_new.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\pen.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Background.jpg">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Python-48.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\rotate_left.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\text.png" />
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="is3_64.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\loginback.jpg" />
+    <ProjectReference Include="..\..\IS3-ArcGIS\IS3-ArcGIS.csproj">
+      <Project>{3e9a8ded-38b8-4050-849c-08957aeb5fbf}</Project>
+      <Name>IS3-ArcGIS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IS3-Core\IS3-Core\IS3-Core.csproj">
+      <Project>{4b8b162c-3658-4fcc-ab41-c0c85a7db281}</Project>
+      <Name>IS3-Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\IS3-Control\IS3-Control.csproj">
+      <Project>{d6656aff-c6ee-43b2-b471-4c938870e132}</Project>
+      <Name>IS3-Control</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\WpfPageTransitions\IS3.Control.WpfPageTransitions.csproj">
+      <Project>{22a46d61-1d40-43a9-802c-b9d43dadd9ec}</Project>
+      <Name>IS3.Control.WpfPageTransitions</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\placeholder32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\pIcon32.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\pIcon64.png" />
+    <Resource Include="Images\Geology-48.png" />
+    <Resource Include="Images\house-32.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

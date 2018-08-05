@@ -6,8 +6,8 @@ using System.Web;
 using System.Data;
 
 using IS3.Core;
-using IS3.Core.Serialization;
-using IS3.Geology.Serialization;
+//using IS3.Core.Serialization;
+//using IS3.Geology.Serialization;
 
 namespace IS3.Geology
 {
@@ -45,16 +45,6 @@ namespace IS3.Geology
         public Stratum()
         { }
 
-        public Stratum(DataRow rawData)
-            :base(rawData)
-        { }
-
-        public override bool LoadObjs(DGObjects objs)
-        {
-            GeologyDGObjectLoader loader2 = new GeologyDGObjectLoader();
-            bool success = loader2.LoadStrata(objs);
-            return success;
-        }
         public override string ToString()
         {
             string str = base.ToString();

@@ -13,10 +13,11 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
+using IS3.Core;
 
-namespace WpfPageTransitions
+namespace IS3.Control.WpfPageTransitions
 {
-	public partial class PageTransition : UserControl
+	public partial class PageTransition : UserControl,IPageTransition
 	{
 		Stack<UserControl> pages = new Stack<UserControl>();
 

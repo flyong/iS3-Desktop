@@ -48,7 +48,7 @@ namespace IS3.Desktop
     public partial class PlanView : UserControl, IViewHolder
     {
         protected MainFrame _mainFrame;
-        protected IS3View _view;
+        protected IS3View2D _view;
         protected LayersWindow _layersWindow;
 
         public void setCoord(string coord)
@@ -66,7 +66,7 @@ namespace IS3.Desktop
             InitializeComponent();
 
             _mainFrame = mainFrame;
-            _view = new IS3View(this, MyMapView);
+            _view = new IS3View2D(this, MyMapView);
             _view.prj = prj;
             _view.eMap = eMap;
             MyProgressBar.DataContext = _view;
@@ -82,7 +82,7 @@ namespace IS3.Desktop
 
         void PlanView_GotFocus(object sender, RoutedEventArgs e)
         {
-            _mainFrame.activeView = _view;
+           // _mainFrame.activeView = _view;
         }
 
         private void PinButton_Click(object sender, RoutedEventArgs e)

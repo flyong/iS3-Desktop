@@ -1,4 +1,4 @@
-﻿using IS3.Core.Service;
+﻿using iS3.Core.Service;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -9,7 +9,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     public class DGObjectRepository : IRepository<DGObject>
     {
@@ -93,7 +93,7 @@ namespace IS3.Core
             //网络请求 
             string result = await Task.Run(() =>
                WebApiCaller.HttpGet(ServiceConfig.BaseURL +
-               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,IS3.Core.MessageConverter.EnCode(filter))));
+               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,iS3.Core.MessageConverter.EnCode(filter))));
             //
             JObject obj = JObject.Parse(result);
             string data = obj["data"].ToString();

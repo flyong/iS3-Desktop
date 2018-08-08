@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace IS3.Control.WpfPageTransitions
+namespace iS3.Control.WpfPageTransitions
 {
 	public enum PageTransitionType
 	{

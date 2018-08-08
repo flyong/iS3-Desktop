@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     public class IS3ViewNormal : IView
     {

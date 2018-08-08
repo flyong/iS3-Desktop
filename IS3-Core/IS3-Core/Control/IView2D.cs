@@ -1,12 +1,12 @@
-﻿using IS3.Core.Geometry;
-using IS3.Core.Graphics;
+﻿using iS3.Core.Geometry;
+using iS3.Core.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IS3.Core
+namespace iS3.Core
 {
 
     public interface IView2D:IView

@@ -3,12 +3,12 @@ using System.Data;
 using System.Collections.Generic;
 using System.Windows;
 
-//using IS3.Core.Serialization;
-using IS3.Core.Shape;
+//using iS3.Core.Serialization;
+using iS3.Core.Shape;
 using System.Threading.Tasks;
 using System.ComponentModel;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     #region Copyright Notice
     //************************  Notice  **********************************

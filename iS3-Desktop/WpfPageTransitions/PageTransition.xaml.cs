@@ -13,9 +13,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Threading.Tasks;
 using System.Windows.Media.Animation;
-using IS3.Core;
+using iS3.Core;
 
-namespace IS3.Control.WpfPageTransitions
+namespace iS3.Control.WpfPageTransitions
 {
 	public partial class PageTransition : UserControl,IPageTransition
 	{

@@ -4,7 +4,7 @@ using System.Xml.Linq;
 using System.Windows.Markup;
 using System.Collections.ObjectModel;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     #region Copyright Notice
     //************************  Notice  **********************************
@@ -184,7 +184,7 @@ namespace IS3.Core
 
         public static ProjectDefinition Load(XElement root)
         {
-            XNamespace is3 = "clr-namespace:IS3.Core;assembly=IS3.Core";
+            XNamespace is3 = "clr-namespace:iS3.Core;assembly=iS3.Core";
             XElement node = root.Element(is3 + "ProjectDefinition");
             object obj = null;
             if (node != null)

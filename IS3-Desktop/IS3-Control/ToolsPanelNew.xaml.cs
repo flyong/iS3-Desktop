@@ -13,9 +13,9 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-using IS3.Core;
+using iS3.Core;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     /// <summary>
     /// ToolsPanelNew.xaml 的交互逻辑

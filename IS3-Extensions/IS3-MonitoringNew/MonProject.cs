@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using IS3.Core;
-namespace IS3.Monitoring
+using iS3.Core;
+namespace iS3.Monitoring
 {
     public class MonProject:DGObject
     {

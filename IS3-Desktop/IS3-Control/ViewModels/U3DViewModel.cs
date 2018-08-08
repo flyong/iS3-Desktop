@@ -4,15 +4,15 @@ using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 
-using IS3.Core;
-using IS3.Core.Geometry;
+using iS3.Core;
+using iS3.Core.Geometry;
 
 
 using System.Diagnostics;
 using System.Threading;
 using System.Windows.Controls;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     public class U3DViewModel : IView3D
     {

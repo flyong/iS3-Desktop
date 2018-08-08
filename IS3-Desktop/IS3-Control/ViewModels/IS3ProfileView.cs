@@ -9,9 +9,9 @@ using System.Windows.Controls;
 using Esri.ArcGISRuntime.Controls;
 using Esri.ArcGISRuntime.Geometry;
 
-using IS3.Core;
+using iS3.Core;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     class IS3ProfileView : IS3View2D
     {

@@ -17,12 +17,12 @@ using Xceed.Wpf.AvalonDock;
 using Xceed.Wpf.AvalonDock.Layout;
 using Xceed.Wpf.AvalonDock.Layout.Serialization;
 
-using IS3.Core;
-using IS3.Python;
-using IS3.Control.UserControls;
-using IS3.Core.Service;
+using iS3.Core;
+using iS3.Python;
+using iS3.Control.UserControls;
+using iS3.Core.Service;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     //************************  Notice  **********************************
     //** This file is part of iS3
@@ -272,8 +272,8 @@ namespace IS3.Control
             _prj = Project.load(definitionFile).Result;
             Globals.project = _prj;
             objSelectionChangedTrigger += _prj.objSelectionChangedListener;
-            if (projectLoaded != null)
-                projectLoaded(this, EventArgs.Empty);
+            //if (projectLoaded != null)
+            //    projectLoaded(this, EventArgs.Empty);
         }
 
         public async void LoadViews()
@@ -308,7 +308,7 @@ namespace IS3.Control
                 layoutAnchorable.CanClose = false;
                 DomainTreeHolder.Children.Add(layoutAnchorable);
 
-                IS3.Control.TreePanel treePanel = new IS3.Control.TreePanel(domain.root);
+                iS3.Control.TreePanel treePanel = new iS3.Control.TreePanel(domain.root);
                 treePanel.view.load();
                 layoutAnchorable.Content = treePanel;
             }
@@ -446,12 +446,12 @@ namespace IS3.Control
                 //loadUI(assembly);
                 // call init() function in the loaded assembly
                 var types = from type in assembly.GetTypes()
-                            where type.IsSubclassOf(typeof(IS3.Core.Extensions))
+                            where type.IsSubclassOf(typeof(iS3.Core.Extensions))
                             select type;
                 foreach (var type in types)
                 {
                     object obj = Activator.CreateInstance(type);
-                    IS3.Core.Extensions extension = obj as IS3.Core.Extensions;
+                    iS3.Core.Extensions extension = obj as iS3.Core.Extensions;
                     if (extension == null)
                         continue;
                     string msg = extension.init();
@@ -576,7 +576,7 @@ namespace IS3.Control
                 layoutAnchorable.Title = ui.name;
                 layoutAnchorable.CanClose = false;
                 layoutAnchorable.Content = ui.content;
-                ui.parent = layoutAnchorable;
+                //ui.parent = layoutAnchorable;
                 if (!ui.isActive)
                 {
                     layoutAnchorable.Hide();

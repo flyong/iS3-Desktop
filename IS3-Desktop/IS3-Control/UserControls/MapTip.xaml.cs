@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace IS3.Control.UserControls
+namespace iS3.Control.UserControls
 {
     /// <summary>
     /// Interaction logic for MapTip.xaml

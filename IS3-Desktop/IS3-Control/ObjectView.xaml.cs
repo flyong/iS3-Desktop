@@ -34,10 +34,10 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Data;
 
-using IS3.Core;
+using iS3.Core;
 
 
-namespace IS3.Control
+namespace iS3.Control
 {
     /// <summary>
     /// Interaction logic for ObjectView.xaml

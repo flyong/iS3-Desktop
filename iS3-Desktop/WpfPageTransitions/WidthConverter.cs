@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Data;
 
-namespace IS3.Control.WpfPageTransitions
+namespace iS3.Control.WpfPageTransitions
 {
 	public class WidthConverter : IValueConverter
 	{

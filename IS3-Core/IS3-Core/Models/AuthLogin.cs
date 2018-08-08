@@ -5,10 +5,10 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
-using IS3.Core.Service;
+using iS3.Core.Service;
 using Newtonsoft.Json.Linq;
 
-namespace IS3.Core.Models
+namespace iS3.Core.Models
 {
     public class AuthLogin
     {

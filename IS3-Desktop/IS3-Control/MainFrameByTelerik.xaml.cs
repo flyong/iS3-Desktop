@@ -14,13 +14,13 @@ using System.Reflection;
 using System.Data;
 
 
-using IS3.Core;
-using IS3.Python;
-using IS3.Core.Service;
+using iS3.Core;
+using iS3.Python;
+using iS3.Core.Service;
 using Telerik.Windows.Controls;
-using IS3.Control;
+using iS3.Control;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     //************************  Notice  **********************************
     //** This file is part of iS3
@@ -218,7 +218,7 @@ namespace IS3.Control
                 layout.Header = domain.name;
                 DomainTreeHolder.Items.Add(layout);
 
-                IS3.Control.TreePanel treePanel = new IS3.Control.TreePanel(domain.root);
+                iS3.Control.TreePanel treePanel = new iS3.Control.TreePanel(domain.root);
                 treePanel.view.load();
 
                 layout.Content = treePanel;
@@ -354,12 +354,12 @@ namespace IS3.Control
                 //loadUI(assembly);
                 // call init() function in the loaded assembly
                 var types = from type in assembly.GetTypes()
-                            where type.IsSubclassOf(typeof(IS3.Core.Extensions))
+                            where type.IsSubclassOf(typeof(iS3.Core.Extensions))
                             select type;
                 foreach (var type in types)
                 {
                     object obj = Activator.CreateInstance(type);
-                    IS3.Core.Extensions extension = obj as IS3.Core.Extensions;
+                    iS3.Core.Extensions extension = obj as iS3.Core.Extensions;
                     if (extension == null)
                         continue;
                     string msg = extension.init();
@@ -403,12 +403,12 @@ namespace IS3.Control
                 //loadUI(assembly);
                 // call init() function in the loaded assembly
                 var types = from type in assembly.GetTypes()
-                            where type.IsSubclassOf(typeof(IS3.Core.Extensions))
+                            where type.IsSubclassOf(typeof(iS3.Core.Extensions))
                             select type;
                 foreach (var type in types)
                 {
                     object obj = Activator.CreateInstance(type);
-                    IS3.Core.Extensions extension = obj as IS3.Core.Extensions;
+                    iS3.Core.Extensions extension = obj as iS3.Core.Extensions;
                     if (extension == null)
                         continue;
                     string msg = extension.init();

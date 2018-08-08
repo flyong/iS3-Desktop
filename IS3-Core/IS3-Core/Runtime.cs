@@ -1,10 +1,10 @@
 ﻿using System.Reflection;
 using System.IO;
 
-using IS3.Core.Graphics;
-using IS3.Core.Geometry;
+using iS3.Core.Graphics;
+using iS3.Core.Geometry;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     #region Copyright Notice
     //************************  Notice  **********************************
@@ -60,7 +60,7 @@ namespace IS3.Core
                 DirectoryInfo di = System.IO.Directory.GetParent(exePath);
                 rootPath = di.FullName;
             }
-            string dataPath = rootPath + "\\Data";
+            string dataPath = rootPath + "\\Output\\Data";
             string tilePath = dataPath + "\\TPKs";
             Runtime.rootPath = rootPath;
             Runtime.dataPath = dataPath;

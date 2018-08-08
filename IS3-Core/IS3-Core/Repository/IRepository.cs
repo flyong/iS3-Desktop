@@ -6,7 +6,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     public interface IRepository<T> where T : class, new()
     {

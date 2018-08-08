@@ -4,7 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     public class MessageConverter
     {

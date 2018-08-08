@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     public class DllImport
     {

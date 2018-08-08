@@ -12,9 +12,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-using IS3.Core;
+using iS3.Core;
 
-namespace IS3.Control
+namespace iS3.Control
     {
     public partial class UnityPanel : UserControl,IViewHolder
     {

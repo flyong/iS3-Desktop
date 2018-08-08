@@ -7,8 +7,8 @@
     <ProjectGuid>{27E8435C-B314-434A-BB39-57CB53AC3A09}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>IS3.Desktop</RootNamespace>
-    <AssemblyName>IS3.Desktop</AssemblyName>
+    <RootNamespace>iS3.Desktop</RootNamespace>
+    <AssemblyName>iS3.Desktop</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -43,7 +43,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\..\bin\</OutputPath>
+    <OutputPath>..\..\Output\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -82,20 +82,26 @@
     <ApplicationIcon>is3_64.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="AxInterop.UnityWebPlayerAXLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="Esri.ArcGISRuntime, Version=10.2.5.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\AxInterop.UnityWebPlayerAXLib.dll</HintPath>
+      <HintPath>..\..\Output\libs\arcgis\Esri.ArcGISRuntime.dll</HintPath>
+      <Private>False</Private>
     </Reference>
-    <Reference Include="Esri.ArcGISRuntime, Version=10.2.5.0, Culture=neutral, PublicKeyToken=8fc3cc631e44ad86, processorArchitecture=MSIL" />
-    <Reference Include="IS3.Python, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\IS3.Python.dll</HintPath>
+    <Reference Include="iS3.Control.WpfPageTransitions">
+      <HintPath>..\..\Output\libs\iS3.Control.WpfPageTransitions.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="iS3.Python">
+      <HintPath>..\..\Output\bin\iS3.Python.dll</HintPath>
+      <Private>False</Private>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
+    <Reference Include="System.Windows.Interactivity, Version=4.5.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>False</Private>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -104,66 +110,12 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
-    <Reference Include="Telerik.Windows.Controls, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Telerik.Windows.Controls.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Windows.Controls.Navigation, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7" />
-    <Reference Include="Telerik.Windows.Themes.Fluent, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Telerik.Windows.Themes.Fluent.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Windows.Themes.Material, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Telerik.Windows.Themes.Material.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Windows.Themes.Office2016, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Telerik.Windows.Themes.Office2016.dll</HintPath>
-    </Reference>
-    <Reference Include="Telerik.Windows.Themes.VisualStudio2013, Version=2018.1.116.45, Culture=neutral, PublicKeyToken=5803cfa389c90ce7, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\Telerik.Windows.Themes.VisualStudio2013.dll</HintPath>
-    </Reference>
-    <Reference Include="U3DPlayerAxLib, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\U3DPlayerAxLib.dll</HintPath>
-    </Reference>
     <Reference Include="UIAutomationProvider" />
     <Reference Include="UIAutomationTypes" />
-    <Reference Include="UnityCore, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\UnityCore.dll</HintPath>
-    </Reference>
-    <Reference Include="UnityEngine, Version=0.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\bin\UnityEngine.dll</HintPath>
-    </Reference>
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="WindowsFormsIntegration" />
-    <Reference Include="WpfPageTransitions">
-      <HintPath>..\WpfPageTransitions\bin\Debug\WpfPageTransitions.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.DataGrid">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.DataGrid.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.2.1.0\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -348,26 +300,25 @@
     <Resource Include="is3_64.ico" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\IS3-ArcGIS\IS3-ArcGIS.csproj">
-      <Project>{3e9a8ded-38b8-4050-849c-08957aeb5fbf}</Project>
-      <Name>IS3-ArcGIS</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\..\IS3-Core\IS3-Core\IS3-Core.csproj">
-      <Project>{4b8b162c-3658-4fcc-ab41-c0c85a7db281}</Project>
-      <Name>IS3-Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\IS3-Control\IS3-Control.csproj">
-      <Project>{d6656aff-c6ee-43b2-b471-4c938870e132}</Project>
-      <Name>IS3-Control</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\WpfPageTransitions\IS3.Control.WpfPageTransitions.csproj">
-      <Project>{22a46d61-1d40-43a9-802c-b9d43dadd9ec}</Project>
-      <Name>IS3.Control.WpfPageTransitions</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <Resource Include="Images\Geology-48.png" />
     <Resource Include="Images\house-32.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\IS3-ArcGIS\iS3-ArcGIS.csproj">
+      <Project>{3e9a8ded-38b8-4050-849c-08957aeb5fbf}</Project>
+      <Name>iS3-ArcGIS</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\IS3-Core\IS3-Core\iS3-Core.csproj">
+      <Project>{4b8b162c-3658-4fcc-ab41-c0c85a7db281}</Project>
+      <Name>iS3-Core</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\IS3-Control\iS3-Control.csproj">
+      <Project>{d6656aff-c6ee-43b2-b471-4c938870e132}</Project>
+      <Name>iS3-Control</Name>
+      <Private>False</Private>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

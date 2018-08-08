@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Data;
 
-//using IS3.Core.Serialization;
+//using iS3.Core.Serialization;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     #region Copyright Notice
     //************************  Notice  **********************************

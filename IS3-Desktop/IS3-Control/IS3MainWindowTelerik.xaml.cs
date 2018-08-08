@@ -12,11 +12,11 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using IS3.Core;
+using iS3.Core;
 using Telerik.Windows;
 using Telerik.Windows.Controls;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     /// <summary>
     /// IS3MainWindow.xaml 的交互逻辑

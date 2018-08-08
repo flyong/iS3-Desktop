@@ -5,10 +5,10 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Input;
 using System.Xml;
-using IS3.Core;
+using iS3.Core;
 using Telerik.Windows.Controls;
 
-namespace IS3.Control.ViewModels
+namespace iS3.Control.ViewModels
 {
     public class ToolsPanelViewModel
     {

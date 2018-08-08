@@ -18,14 +18,14 @@ using Esri.ArcGISRuntime.Layers;
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Symbology;
 
-using IS3.Core;
+using iS3.Core;
 using System.Threading.Tasks;
 using Esri.ArcGISRuntime.Controls;
 using System.Data.SqlClient;
 using System.Xml.Linq;
-using IS3.Core.Repository;
+using iS3.Core.Repository;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     //************************  Notice  **********************************
     //** This file is part of iS3
@@ -133,9 +133,9 @@ namespace IS3.Control
             try
             {
                 await _MarkerSymbol_Normal.SetSourceAsync(
-                new Uri("pack://application:,,,/IS3.Control;component/Images/pin_red.png"));
+                new Uri("pack://application:,,,/iS3.Control;component/Images/pin_red.png"));
                 await _MarkerSymbol_Select.SetSourceAsync(
-                    new Uri("pack://application:,,,/IS3.Control;component/Images/pIcon64.png"));
+                    new Uri("pack://application:,,,/iS3.Control;component/Images/pIcon64.png"));
             }
             catch (Exception ex)
             {

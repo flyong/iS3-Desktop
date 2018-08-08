@@ -1,4 +1,4 @@
-﻿using IS3.Core.Service;
+﻿using iS3.Core.Service;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -8,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IS3.Core.Repository
+namespace iS3.Core.Repository
 {
     public class RepositoryForProject
     {

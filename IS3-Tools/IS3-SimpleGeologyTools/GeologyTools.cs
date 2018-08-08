@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-using IS3.Core;
+using iS3.Core;
 
-namespace IS3.SimpleGeologyTools
+namespace iS3.SimpleGeologyTools
 {
     #region Copyright Notice
     //************************  Notice  **********************************
@@ -32,7 +32,7 @@ namespace IS3.SimpleGeologyTools
     #endregion
 
     // Summary:
-    //     Inherits from IS3.Core.Tools to add geology tools.
+    //     Inherits from iS3.Core.Tools to add geology tools.
     //     This is the entry point for the tools.
     // Remarks:
     //     Overide treeItems() function to return a list of 

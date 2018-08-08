@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-//using IS3.Core.Serialization;
-using IS3.Core.Shape;
+//using iS3.Core.Serialization;
+using iS3.Core.Shape;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     #region Copyright Notice
     //************************  Notice  **********************************

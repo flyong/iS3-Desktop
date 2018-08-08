@@ -16,10 +16,10 @@ using System.Windows.Shapes;
 using Esri.ArcGISRuntime.Layers;
 using Esri.ArcGISRuntime.Geometry;
 
-using IS3.Core;
-using IS3.Control.UserControls;
+using iS3.Core;
+using iS3.Control.UserControls;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     //************************  Notice  **********************************
     //** This file is part of iS3

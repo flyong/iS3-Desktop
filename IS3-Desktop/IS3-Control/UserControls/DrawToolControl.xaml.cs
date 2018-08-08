@@ -2,9 +2,9 @@
 using System.Windows;
 using System.Windows.Controls;
 
-using IS3.Core;
+using iS3.Core;
 
-namespace IS3.Control.UserControls
+namespace iS3.Control.UserControls
 {
     public class DrawToolClickEventArgs : EventArgs
     {

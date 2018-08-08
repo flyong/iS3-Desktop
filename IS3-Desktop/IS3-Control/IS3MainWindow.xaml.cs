@@ -12,8 +12,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using IS3.Core;
-namespace IS3.Control
+using iS3.Core;
+namespace iS3.Control
 {
     /// <summary>
     /// IS3MainWindow.xaml 的交互逻辑

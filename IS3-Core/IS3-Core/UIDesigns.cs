@@ -5,10 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using Xceed.Wpf.AvalonDock;
-using Xceed.Wpf.AvalonDock.Layout;
 
-namespace IS3.Core
+namespace iS3.Core
 {
     public class LoginClickArgs
     {
@@ -31,7 +29,6 @@ namespace IS3.Core
     public interface IExteralUI
     {
         string name { get; set; }
-        LayoutAnchorable parent { get; set; }
         UserControl content { get; set; }
         bool isActive { get; set; }
 

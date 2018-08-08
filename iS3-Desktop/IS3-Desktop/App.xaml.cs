@@ -12,16 +12,16 @@ using System.IO;
 using System.Windows.Media;
 using System.Reflection;
 
-using IS3.Core;
-//using IS3.Core.Serialization;
-using IS3.ArcGIS.Graphics;
-using IS3.ArcGIS.Geometry;
+using iS3.Core;
+//using iS3.Core.Serialization;
+using iS3.ArcGIS.Graphics;
+using iS3.ArcGIS.Geometry;
 
-using IS3.Desktop.Properties;
-using Telerik.Windows.Controls;
+using iS3.Desktop.Properties;
+//using Telerik.Windows.Controls;
 using System.Xml.Linq;
 
-namespace IS3.Desktop
+namespace iS3.Desktop
 {
     /// <summary>
     /// Interaction logic for App.xaml
@@ -43,7 +43,6 @@ namespace IS3.Desktop
         }
         void Application_Startup(object sender, StartupEventArgs e)
         {
-            StyleManager.ApplicationTheme = new Windows8Theme();
             Globals.iS3Core = new IS3RuntimeControl();
 
             XDocument xml = XDocument.Load(Runtime.configurationPath);
@@ -51,20 +50,20 @@ namespace IS3.Desktop
             if (version == "Normal")
             {
                 //Normal Style
-                Globals.iS3Core.SetPageHolder(new IS3.Control.IS3MainWindow());
-                Globals.iS3Core.SetProjectList(new IS3.Control.ProjectListPage());
-                Globals.iS3Core.SetMainFrame(new IS3.Control.MainFrame("TONGJI"));
+                Globals.iS3Core.SetPageHolder(new iS3.Control.IS3MainWindow());
+                Globals.iS3Core.SetProjectList(new iS3.Control.ProjectListPage());
+                Globals.iS3Core.SetMainFrame(new iS3.Control.MainFrame("TONGJI"));
             }
             else
             {
                 //Telerik Style
-                Globals.iS3Core.SetPageHolder(new IS3.Control.IS3MainWindowTelerik());
-                Globals.iS3Core.SetProjectList(new IS3.Control.ProjectListPageTelerik());
-                Globals.iS3Core.SetMainFrame(new IS3.Control.MainFrameByTelerik("TONGJI"));
+                //Globals.iS3Core.SetPageHolder(new iS3.Control.IS3MainWindowTelerik());
+                //Globals.iS3Core.SetProjectList(new iS3.Control.ProjectListPageTelerik());
+                //Globals.iS3Core.SetMainFrame(new iS3.Control.MainFrameByTelerik("TONGJI"));
             }
-            Globals.iS3Core.SetPageTransition(new IS3.Control.WpfPageTransitions.PageTransition());
+            Globals.iS3Core.SetPageTransition(new iS3.Control.WpfPageTransitions.PageTransition());
             Globals.iS3Core.MainWindowShow();
-            Globals.iS3Core.SetLogin(new IS3.Control.UserLoginPage());
+            Globals.iS3Core.SetLogin(new iS3.Control.UserLoginPage());
 
             Globals.iS3Core.SetPageShow(PageType.LoginPage);
             
@@ -74,7 +73,7 @@ namespace IS3.Desktop
                 string exePath = System.IO.Path.GetDirectoryName(exeLocation);
                 DirectoryInfo di = System.IO.Directory.GetParent(exePath);
                 string rootPath = di.FullName;
-                string dataPath = rootPath + "\\Data";
+                string dataPath = rootPath + "\\Output\\Data";
                 string tilePath = dataPath + "\\TPKs";
                 Runtime.rootPath = rootPath;
                 Runtime.dataPath = dataPath;
@@ -105,7 +104,7 @@ namespace IS3.Desktop
                 string exePath = System.IO.Path.GetDirectoryName(exeLocation);
                 DirectoryInfo di = System.IO.Directory.GetParent(exePath);
                 string rootPath = di.FullName;
-                string dataPath = rootPath + "\\Data";
+                string dataPath = rootPath + "\\Output\\Data";
                 string tilePath = dataPath + "\\TPKs";
                 Runtime.rootPath = rootPath;
                 Runtime.dataPath = dataPath;

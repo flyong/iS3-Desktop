@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Windows;
 using System.Collections.Generic;
-namespace IS3.Core
+namespace iS3.Core
 {
     #region Copyright Notice
     //************************  Notice  **********************************

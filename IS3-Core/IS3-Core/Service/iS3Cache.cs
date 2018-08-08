@@ -6,7 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace IS3.Core.Service
+namespace iS3.Core.Service
 {
     public class iS3Cache
     {

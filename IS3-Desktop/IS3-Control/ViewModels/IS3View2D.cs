@@ -15,15 +15,15 @@ using Esri.ArcGISRuntime.LocalServices;
 using Esri.ArcGISRuntime.Geometry;
 using Esri.ArcGISRuntime.Data;
 
-using IS3.Core;
-using IS3.Core.Graphics;
-using IS3.Core.Geometry;
-using IS3.ArcGIS;
-using IS3.ArcGIS.Graphics;
-using IS3.ArcGIS.Geometry;
-using IS3.Control.UserControls;
+using iS3.Core;
+using iS3.Core.Graphics;
+using iS3.Core.Geometry;
+using iS3.ArcGIS;
+using iS3.ArcGIS.Graphics;
+using iS3.ArcGIS.Geometry;
+using iS3.Control.UserControls;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     //************************  Notice  **********************************
     //** This file is part of iS3
@@ -604,7 +604,7 @@ namespace IS3.Control
             IS3GraphicsLayer gLayer = new IS3GraphicsLayer();
             gLayer.DisplayName = table.Name;
             gLayer.GraphicsSource = graphics;
-            gLayer.geometryType = (IS3.Core.Geometry.GeometryType)(int)table.GeometryType;
+            gLayer.geometryType = (iS3.Core.Geometry.GeometryType)(int)table.GeometryType;
 
             return gLayer;
         }

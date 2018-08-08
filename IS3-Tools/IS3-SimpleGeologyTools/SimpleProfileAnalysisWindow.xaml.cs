@@ -7,15 +7,15 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using System.Windows.Media;
 
-using IS3.Core;
-using IS3.Core.Geometry;
-using IS3.Core.Graphics;
-using IS3.Core.Service;
-using IS3.Geology;
+using iS3.Core;
+using iS3.Core.Geometry;
+using iS3.Core.Graphics;
+using iS3.Core.Service;
+using iS3.Geology;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace IS3.SimpleGeologyTools
+namespace iS3.SimpleGeologyTools
 {
     #region Copyright Notice
     //************************  Notice  **********************************

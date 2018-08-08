@@ -5,7 +5,7 @@ using System.Text;
 using System.Windows.Data;
 using System.Windows.Media;
 
-namespace IS3.Control.WpfPageTransitions
+namespace iS3.Control.WpfPageTransitions
 {
 	public class CenterConverter : IValueConverter
 	{

@@ -8,12 +8,12 @@ using System.Windows.Controls;
 using System.Collections;
 using System.IO;
 
-using IS3.Core;
-using IS3.Core.Geometry;
-using IS3.Core.Graphics;
+using iS3.Core;
+using iS3.Core.Geometry;
+using iS3.Core.Graphics;
 
 using UnityCore.MessageSys;
-namespace IS3.Control
+namespace iS3.Control
 {
     //************************  Notice  **********************************
     //** This file is part of iS3

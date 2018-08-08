@@ -1,4 +1,4 @@
-﻿namespace IS3.Control
+﻿namespace iS3.Control
 {
     partial class UnityPanel
     {

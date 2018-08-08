@@ -3,14 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:IS3.Control"
+             xmlns:local="clr-namespace:iS3.Control"
              xmlns:telerik="http://schemas.telerik.com/2008/xaml/presentation"
              xmlns:dx="http://schemas.devexpress.com/winfx/2008/xaml/core" 
-             xmlns:ViewModel="clr-namespace:IS3.Control.ViewModels"
+             xmlns:ViewModel="clr-namespace:iS3.Control.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:Primitives="clr-namespace:Telerik.Windows.Controls.RibbonView.Primitives;assembly=Telerik.Windows.Controls.RibbonView"
              xmlns:System="clr-namespace:System;assembly=mscorlib"
-             x:Class="IS3.Control.ToolsPanelNew"
+             x:Class="iS3.Control.ToolsPanelNew"
              mc:Ignorable="d"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.DataContext>

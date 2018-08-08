@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Windows.Media;
 
-using IS3.Core;
-using IS3.Core.Geometry;
-using IS3.Core.Graphics;
-using IS3.Geology;
+using iS3.Core;
+using iS3.Core.Geometry;
+using iS3.Core.Graphics;
+using iS3.Geology;
 
-namespace IS3.SimpleGeologyTools
+namespace iS3.SimpleGeologyTools
 {
     #region Copyright Notice
     //************************  Notice  **********************************

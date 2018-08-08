@@ -7,7 +7,7 @@
 //	using System.Text;
 //	using System.Net;
 //	using System.IO;
-//namespace IS3.Core
+//namespace iS3.Core
 //{
 //    public class FTPHelper
 //    {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace IS3.Core
+namespace iS3.Core
 {
 
     public enum PageType { LoginPage,ProjectList,MainFrame}

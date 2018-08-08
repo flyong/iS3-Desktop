@@ -16,12 +16,12 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Collections;
 
-using IS3.Core;
+using iS3.Core;
 using System.Collections.ObjectModel;
 using System.Threading;
 using System.Reflection;
 
-namespace IS3.Control
+namespace iS3.Control
 {
     public class ObjectValueConverter : IValueConverter
     {

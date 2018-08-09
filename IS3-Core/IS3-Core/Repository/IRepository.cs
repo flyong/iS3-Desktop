@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace iS3.Core
 {
+    //数据操作通用接口
     public interface IRepository<T> where T : class, new()
     {
         #region 1.创建对象-Create

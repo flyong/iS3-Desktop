@@ -135,15 +135,6 @@
     <Compile Include="U3DView.xaml.cs">
       <DependentUpon>U3DView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="U3DViewEXE.xaml.cs">
-      <DependentUpon>U3DViewEXE.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UnityPanel.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="UnityPanel.Designer.cs">
-      <DependentUpon>UnityPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="UserControls\DrawToolControl.xaml.cs">
       <DependentUpon>DrawToolControl.xaml</DependentUpon>
     </Compile>
@@ -164,7 +155,6 @@
     <Compile Include="ViewModels\IS3View2D.cs" />
     <Compile Include="ViewModels\IS3View3D.cs" />
     <Compile Include="ViewModels\IS3ViewBase.cs" />
-    <Compile Include="ViewModels\U3DViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Page Include="IS3DataGrid.xaml">
@@ -206,10 +196,6 @@
     <Page Include="U3DView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="U3DViewEXE.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UserControls\DrawToolControl.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -276,11 +262,6 @@
     <Resource Include="Images\ProjectList_Back.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="UnityPanel.resx">
-      <DependentUpon>UnityPanel.cs</DependentUpon>
-    </EmbeddedResource>
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\..\IS3-ArcGIS\iS3-ArcGIS.csproj">
       <Project>{3e9a8ded-38b8-4050-849c-08957aeb5fbf}</Project>
       <Name>iS3-ArcGIS</Name>
@@ -292,5 +273,6 @@
       <Private>False</Private>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

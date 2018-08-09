@@ -49,6 +49,8 @@ namespace iS3.Core
     //
     public class Project
     {
+        // project unique name in english
+        //
         public string projectID { get; set; }
         // Summary:
         //     Project definition: gives the information such as where the
@@ -76,23 +78,29 @@ namespace iS3.Core
             return _domains.Values.FirstOrDefault(x => x.type == type);
         }
 
-        // Summary:
-        //      Objects layer index class
-        // Remarks:
-        //      Objects can be access with a layer ID which is specified
-        //      in the DGObjectsDefinition.GISLayerName
-       // public Dictionary<string, DGObjects> objsLayerIndex { get; set; }
+        //Summary:
+        //      Objs Def index class
+        //Reamrk:
+        //      DGObjects can be access with its name which is specified
+
         public Dictionary<string, DGObjects> objsDefIndex { get; set; }
+        
+        //Summary:
+        //      Objs def index to 2D layer
+        //Remark:
+        //      DGObjects can be access with related gis layer name
+        public List<DGObjects> Get2dRelatedObjs(string layerName)
+        {
+            return objsDefIndex.Values.Where(x => x.definition.GISLayerName == layerName).ToList(); 
+        }
+        public List<DGObjects> Get3dRelatedObjs(string layerName)
+        {
+            return objsDefIndex.Values.Where(x => x.definition.Layer3DName == layerName).ToList();
+        }
 
-        public Dictionary<string,List<DGObjects>> objs2DIndex { get; set; }
-        public Dictionary<string,List<DGObjects>> objs3DIndex { get; set; }
-
+        //Summary:
+        //       get selected DGObject By objs index and obj id
         public Dictionary<string,IEnumerable<int>> objSelectedIndex { get; set; }
-        // Summary:
-        //      Objects table index class
-        // Remarks:
-        //      Objects can be access with a DataSet (DGObjects.RawDataSet).
-        //  public Dictionary<DataSet, DGObjects> dataSetIndex { get; set; }
 
         public Project()
         {
@@ -100,10 +108,16 @@ namespace iS3.Core
             _domains = new Dictionary<string, Domain>();
             objsDefIndex = new Dictionary<string, DGObjects>();
             objSelectedIndex = new Dictionary<string, IEnumerable<int>>();
-            objs2DIndex = new Dictionary<string, List<DGObjects>>();
-            objs3DIndex = new Dictionary<string, List<DGObjects>>();
         }
 
+        // Summary:
+        //     Find objects with given layer ID
+        //     python is3.py use this function
+        //
+        public DGObjects findObjects(string layerID)
+        {
+            return Get2dRelatedObjs(layerID).FirstOrDefault();
+        }
         // Summary:
         //     Load project defintion from a XML file
         //
@@ -209,15 +223,7 @@ namespace iS3.Core
                     objs = domain.objsContainer[tree.RefObjsName];
                 if (objs == null)
                     continue;
-
-                //if (objs.rawDataSet.Tables.Count == 0)
-                //    continue;
-
-                //// Open a view on the table, and apply filter and sort rule on the table
-                ////
-                //DataTable dt = objs.rawDataSet.Tables[0];
-                //DataView dv = new DataView(dt, tree.Filter, tree.Sort, DataViewRowState.CurrentRows);
-                //tree.ObjectsView = dv;
+                // add related objs to tree 
                 tree.RefObjs = objs;
             }
             return nSync;
@@ -230,7 +236,6 @@ namespace iS3.Core
         //      (1) Load defintion at first
         //      (2) Load project domain data specifiled in the definition file
         //
-        //public static DbContext dbContext;
         public static async Task<Project> load(string definitionFile)
         {
             Project prj = new Project();
@@ -244,8 +249,7 @@ namespace iS3.Core
             foreach (Domain domain in prj.domains.Values)
             {
                 // load all objects into domain
-                //domain.loadAllObjects(dbContext);
-                domain.loadAllObjects();
+                await domain.loadAllObjects();
                 // sync objects on the tree
                 prj.syncObjectsOnTree(domain.root);
                 // build objects index based on layer ID
@@ -255,25 +259,8 @@ namespace iS3.Core
                     string defName = def.Key;
                     DGObjects objs = domain.objsContainer[defName];
                     prj.objsDefIndex[defName] = objs;
-                    if ((objs.definition.GISLayerName!=null)&&(objs.definition.GISLayerName.Length>0))
-                    {
-                        if (!prj.objs2DIndex.ContainsKey(objs.definition.GISLayerName))
-                        {
-                            prj.objs2DIndex[objs.definition.GISLayerName] = new List<DGObjects>();
-                        }
-                        prj.objs2DIndex[objs.definition.GISLayerName].Add(objs);
-                    }
-                    if ((objs.definition.Layer3DName != null) && (objs.definition.Layer3DName.Length > 0))
-                    {
-                        if (!prj.objs3DIndex.ContainsKey(objs.definition.Layer3DName))
-                        {
-                            prj.objs3DIndex[objs.definition.Layer3DName] = new List<DGObjects>();
-                        }
-                        prj.objs3DIndex[objs.definition.Layer3DName].Add(objs);
-                    }
                 }
             }
-            //dbContext.Close();
 
             return prj;
         }
@@ -367,7 +354,6 @@ namespace iS3.Core
         public Dictionary<string, IEnumerable<int>>
             getSelectedObjs()
         {
-
             return objSelectedIndex; ;
         }
       
@@ -396,9 +382,7 @@ namespace iS3.Core
                 }
 
             }
-
             return selectedObjsDict;
         }
-
     }
 }

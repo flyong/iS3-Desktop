@@ -165,7 +165,7 @@ namespace iS3.Core
 
         //// Graphics-Objects Sync
         ////
-        //int syncObjects();
+        int syncObjects();
         //int syncObjects(string layerID, List<DGObject> objs);
 
         void DGObjectsSelectionChangedListenerOuter(object sender,

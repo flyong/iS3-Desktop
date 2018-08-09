@@ -78,7 +78,7 @@ namespace iS3.Control
         {
             get { return projectID; }
         }
-        public List<IExteralUI> exteralUIs { get; set; }
+        //public List<IExteralUI> exteralUIs { get; set; }
         public string projectID { get; set; }
 
 
@@ -181,20 +181,20 @@ namespace iS3.Control
         #endregion
         #region load/unload functions
         bool _init = false;
-        void MainFrame_Loaded(object sender, RoutedEventArgs e)
+        async void MainFrame_Loaded(object sender, RoutedEventArgs e)
         {
             try
             {
-                init();
+             await init();
             }
             catch (Exception ex)
             {
                 ipcHost.ConsoleInitialized += (o, args) =>
                 {
                     Dispatcher.Invoke(
-                        new Action(delegate ()
+                        new Action(async delegate ()
                         {
-                            init();
+                            await init();
                             ipcHost.write("");
 
                         }
@@ -204,12 +204,12 @@ namespace iS3.Control
             }
         }
 
-        public void init()
+        public async Task init()
         {
             Thread.Sleep(1000);
             output("\r\n");
-            LoadProject("");
-            LoadViews();
+            await LoadProject("");
+            await LoadViews();
             loadDomainPanels();
             loadExtensions();
             loadToolboxes();
@@ -220,7 +220,7 @@ namespace iS3.Control
             {
                viewholder.view.load();
             }
-            loadByPythonAsync();
+            await loadByPythonAsync();
             _init = true;
         }
 
@@ -231,6 +231,8 @@ namespace iS3.Control
             if ((projectID != null)
                 && (projectID.Length != 0))
             {
+                await LoadProject(projectID + ".xml");
+                loadDomainPanels();
                 string statement = string.Format("import {0}", projectID);
                 runStatements(statement);
             }
@@ -263,20 +265,20 @@ namespace iS3.Control
             }
         }
 
-        public void LoadProject(string definitionFile)
+        public async Task LoadProject(string definitionFile)
         {
             if (definitionFile == null
                 || definitionFile.Length == 0)
                 return;
 
-            _prj = Project.load(definitionFile).Result;
+            _prj = await Project.load(definitionFile);
             Globals.project = _prj;
             objSelectionChangedTrigger += _prj.objSelectionChangedListener;
             //if (projectLoaded != null)
             //    projectLoaded(this, EventArgs.Empty);
         }
 
-        public async void LoadViews()
+        public async Task LoadViews()
         {
             if (_prj == null)
                 return;
@@ -372,7 +374,7 @@ namespace iS3.Control
             await view.initializeView();
 
             // Sync view graphics with data
-            //view.syncObjects();
+            view.syncObjects();
 
             _views.Add(view);
             return view;
@@ -401,80 +403,21 @@ namespace iS3.Control
             }
         }
         #endregion
+
         #region loadPlugin
-        static List<Assembly> _loadedExtensions = new List<Assembly>();
         // Summary:
         //     Load extensions which are located in the bin\extensions\ directory.
         public void loadExtensions()
         {
-            DllImport.LoadExtension();
-            
+            ExtensionManager.GetInstance(this).LoadExtension();
         }
-
-        static List<Assembly> _loadedToolboxes = new List<Assembly>();
-        // Summary:
-        //     Load tools which are located in the bin\tools\ directory.
         public void loadToolboxes()
         {
-            var allAssemblies = AppDomain.CurrentDomain.GetAssemblies();
-            Assembly exeAssembly = Assembly.GetExecutingAssembly();
-            string exeLocation = exeAssembly.Location;
-            string exePath = Path.GetDirectoryName(exeLocation);
-            string toolsPath = exePath + "\\tools";
-
-            if (!Directory.Exists(toolsPath))
-                return;
-
-            // try to load *.dll in bin\tools\
-            var files = Directory.EnumerateFiles(toolsPath, "*.dll",
-                SearchOption.TopDirectoryOnly);
-            foreach (string file in files)
-            {
-                string shortName = Path.GetFileName(file);
-                if (allAssemblies.Any(x => x.ManifestModule.Name == shortName))
-                    continue;
-
-                // Assembly.LoadFile doesn't resolve dependencies, 
-                // so don't use Assembly.LoadFile
-                Assembly assembly = Assembly.LoadFrom(file);
-                if (assembly != null)
-                    _loadedToolboxes.Add(assembly);
-            }
-
-            foreach (Assembly assembly in _loadedToolboxes)
-            {
-                //loadUI(assembly);
-                // call init() function in the loaded assembly
-                var types = from type in assembly.GetTypes()
-                            where type.IsSubclassOf(typeof(iS3.Core.Extensions))
-                            select type;
-                foreach (var type in types)
-                {
-                    object obj = Activator.CreateInstance(type);
-                    iS3.Core.Extensions extension = obj as iS3.Core.Extensions;
-                    if (extension == null)
-                        continue;
-                    string msg = extension.init();
-                    output(msg);
-                }
-
-                // call tools.treeItems() can add it to ToolsPanel
-                types = from type in assembly.GetTypes()
-                        where type.IsSubclassOf(typeof(Tools))
-                        select type;
-                foreach (var type in types)
-                {
-                    object obj = Activator.CreateInstance(type);
-                    Tools tools = obj as Tools;
-                    IEnumerable<ToolTreeItem> treeitems = tools.treeItems();
-                    if (treeitems == null)
-                        continue;
-                    foreach (var item in treeitems)
-                        ToolsPanel.toolboxesTree.add(item);
-                }
-            }
+            IToolsPanel ToolsPanel = new ToolsPanel();
+            ToolsHolder.Content = ToolsPanel;
+            //初始化拓展工具
+            ToolsPanel.init(ExtensionManager.GetInstance(this).loadToolboxes());
         }
-
         // Summary:
         //     load python plugins
         // Remarks:
@@ -493,6 +436,7 @@ namespace iS3.Control
             pyMan.loadPlugins(pyPluginsPath);
         }
         #endregion
+
         #region python 
         // Summary:
         //     Write a string to console.
@@ -548,46 +492,7 @@ namespace iS3.Control
             pyMan.run(file);
         }
         #endregion
-        #region  load UI
-        void loadUI(Assembly assembly)
-        {
-            List<IExteralUI> _list = new List<IExteralUI>();
-            var types = from type in assembly.GetTypes()
-                        where type.GetInterfaces().Contains(typeof(IExteralUI))
-                        select type;
-            foreach (var type in types)
-            {
-                object obj = Activator.CreateInstance(type);
-                IExteralUI ui = obj as IExteralUI;
-                _list.Add(ui);
-            }
-            if (exteralUIs == null)
-            {
-                exteralUIs = new List<IExteralUI>();
-            }
-            exteralUIs.AddRange(_list);
-        }
-        void loadUIPanel()
-        {
-            foreach (IExteralUI ui in exteralUIs)
-            {
-                LayoutAnchorable layoutAnchorable = new LayoutAnchorable();
-                layoutAnchorable.ContentId = ui.name;
-                layoutAnchorable.Title = ui.name;
-                layoutAnchorable.CanClose = false;
-                layoutAnchorable.Content = ui.content;
-                //ui.parent = layoutAnchorable;
-                if (!ui.isActive)
-                {
-                    layoutAnchorable.Hide();
-                }
 
-                ProjectPane.Children.Add(layoutAnchorable);
-            }
-        }
-
-
-        #endregion
         #region remove
         //public IView activeView
         //{

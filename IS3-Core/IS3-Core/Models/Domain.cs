@@ -76,15 +76,7 @@ namespace iS3.Core
 
         public List<DGObjectsDefinition> GetDef(string type)
         {
-            List<DGObjectsDefinition> list = new List<DGObjectsDefinition>();
-            foreach (DGObjectsDefinition def in objsDefinitions.Values)
-            {
-                if (def.Type == type)
-                {
-                    list.Add(def);
-                }
-            }
-            return  list;
+            return objsDefinitions.Values.Where(x=>x.Type==type).ToList();
         }
         // Summary:
         //      Objects container class
@@ -171,7 +163,7 @@ namespace iS3.Core
             return domain;
         }
 
-        public bool loadObjects(string objDefName)
+        public async Task<bool> loadObjects(string objDefName)
         {
             if (parent == null)
                 return false;
@@ -181,16 +173,16 @@ namespace iS3.Core
                 return false;
 
             DGObjects objs = new DGObjects(def);
-            //bool success = objs.load();
             objs.parent = this;
+            objs.objContainer = await objs.QueryAllByObjs();
 
-            // Old objs will be replaced recently loaded objects.
-            //if (success)
-                objsContainer[def.Name] = objs;
+
+            // build a empty DGObjects for use
+            objsContainer[def.Name] = objs;
 
             return true;
         }
-        public bool loadAllObjects()
+        public async Task<bool> loadAllObjects()
         {
             if (parent == null)
                 return false;
@@ -199,11 +191,10 @@ namespace iS3.Core
 
             foreach (DGObjectsDefinition def in objsDefinitions.Values)
             {
-                bool loaded = loadObjects(def.Name);
+                bool loaded =await loadObjects(def.Name);
                 if (!loaded)
                     success = false;
             }
-
             return success;
         }
 

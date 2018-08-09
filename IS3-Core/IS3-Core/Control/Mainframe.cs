@@ -54,10 +54,10 @@ namespace iS3.Core
         // Summary:
         //     Add a view to the mainframe
         Task<IView> addView(EngineeringMap eMap, bool canClose);
-        
-        //Summary
-        //    Exteral UI from Extension/tools
-        List<IExteralUI> exteralUIs { get; set; }
+
+        ////Summary
+        ////    Exteral UI from Extension/tools
+        ////List<IExteralUI> exteralUIs { get; set; }
         // Summary:
         //     Write a string to console.
         // Remarks:

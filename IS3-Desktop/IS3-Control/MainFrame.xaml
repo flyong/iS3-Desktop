@@ -173,12 +173,11 @@
                                                        CanClose="True" >
                                     <local:ObjectView x:Name="objectView"/>
                                 </xcad:LayoutAnchorable>
-                                <xcad:LayoutAnchorable x:Name="Tools"
+                                <xcad:LayoutAnchorable x:Name="ToolsHolder"
                                                        ContentId="Tools"
                                                        Title="Tools"
                                                        CanHide="True"
                                                        CanClose="True" >
-                                    <local:ToolsPanel x:Name="ToolsPanel"/>
                                 </xcad:LayoutAnchorable>
                             </xcad:LayoutAnchorablePane>
 

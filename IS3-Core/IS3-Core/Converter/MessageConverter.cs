@@ -6,7 +6,7 @@ using System.Text;
 
 namespace iS3.Core
 {
-    public class MessageConverter
+    public class APIMessageConverter
     {
         //用于解决URL地址中无法传输特殊符号问题，解码--16进制，-分割
         public static string Decode(string rawStr)

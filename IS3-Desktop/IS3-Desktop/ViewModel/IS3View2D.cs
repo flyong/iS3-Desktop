@@ -23,7 +23,7 @@ using iS3.ArcGIS.Graphics;
 using iS3.ArcGIS.Geometry;
 using iS3.Control.UserControls;
 
-namespace iS3.Control
+namespace iS3.Desktop
 {
     //************************  Notice  **********************************
     //** This file is part of iS3
@@ -180,23 +180,21 @@ namespace iS3.Control
 
         public int syncObjects()
         {
-            if (_prj == null)
-                return 0;
+            //if (_prj == null)
+            //    return 0;
 
-            int count = 0;
+            //int count = 0;
+            //foreach (string layerID in _prj.objsLayerIndex.Keys)
+            //{
+            //    DGObjects objs = _prj.objsLayerIndex[layerID];
+            //    IGraphicsLayer layer = _map.Layers[layerID] as IGraphicsLayer;
+            //    if (layer == null)
+            //        continue;
+            //    count += layer.syncObjects(objs);
+            //}
 
-            foreach (Layer layer in _map.Layers)
-            {
-                List<DGObjects> objsList = _prj.Get2dRelatedObjs(layer.ID);
-                if ((objsList == null) || (objsList.Count==0)) continue;
-                IGraphicsLayer myLayer = layer as IGraphicsLayer;
-                if (myLayer == null) continue;
-                foreach (DGObjects objs in objsList)
-                {
-                    count += myLayer.syncObjects(objs);
-                }
-            }
-            return count;
+            //return count;
+            return 0;
         }
         public int syncObjects(string layerID,List<DGObject> objs)
         {
@@ -372,7 +370,7 @@ namespace iS3.Control
                 }
                 if (obj != null)
                 {
-                    _mapTip.className.Text = obj.GetType().Name;
+                   // _mapTip.className.Text = obj.GetType().Name;
                     _mapTip.DataContext = obj;
                     _mapTip.Visibility = System.Windows.Visibility.Visible;
                     MapView.SetViewOverlayAnchor(_mapTip, mapPoint);
@@ -994,19 +992,19 @@ namespace iS3.Control
 
 
 
-        public async void drawToolsClickEventListener(object sender,
-            UserControls.DrawToolClickEventArgs args)
-        {
-            if (args.stopDraw)
-            {
-                if (_mapView.Editor.Cancel.CanExecute(null))
-                    _mapView.Editor.Cancel.Execute(null);
-            }
-            else
-            {
-                await drawGraphics(args.drawShapeType);
-            }
-        }
+        //public async void drawToolsClickEventListener(object sender,
+        //    UserControls.DrawToolClickEventArgs args)
+        //{
+        //    if (args.stopDraw)
+        //    {
+        //        if (_mapView.Editor.Cancel.CanExecute(null))
+        //            _mapView.Editor.Cancel.Execute(null);
+        //    }
+        //    else
+        //    {
+        //        await drawGraphics(args.drawShapeType);
+        //    }
+        //}
 
         public async Task drawGraphics(DrawShapeType drawShapeType)
         {

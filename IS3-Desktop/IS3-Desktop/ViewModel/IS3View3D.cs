@@ -11,9 +11,8 @@ using System.IO;
 using iS3.Core;
 using iS3.Core.Geometry;
 using iS3.Core.Graphics;
-
 using UnityCore.MessageSys;
-namespace iS3.Control
+namespace iS3.Desktop
 {
     //************************  Notice  **********************************
     //** This file is part of iS3
@@ -45,21 +44,18 @@ namespace iS3.Control
             get { return ViewBaseType.D3; }
         }
 
-        public UserControl parent => throw new NotImplementedException();
+        public virtual UserControl parent { get { return null; } }
 
-        public async Task initializeView() {
+        public virtual  async Task initializeView() {
             await Load3DScene();
         }
 
-        public void onClose() { }
+        public virtual void onClose() { }
 
-        public void highlightObject(DGObject obj, bool on = true)
+        public virtual void highlightObject(DGObject obj, bool on = true)
         {
-            //if (obj == null || obj.parent == null || (obj.parent.definition.Has3D==false))
-            //    return;
-
             SetObjSelectStateMessage message = new SetObjSelectStateMessage();
-            message.path = "iS3Project/Borehole/" + obj.id;
+            message.path = obj.parent.definition.Layer3DName + obj.id;
             message.iSSelected = on;
             ExcuteCommand(message);
         }
@@ -70,18 +66,16 @@ namespace iS3.Control
             foreach (DGObject obj in objs)
                 highlightObject(obj, on);
         }
-        public void highlightObjects(IEnumerable<DGObject> objs,
+        public virtual void highlightObjects(IEnumerable<DGObject> objs,
             string layerID, bool on = true)
         { }
-        public void highlightAll(bool on = true) { }
+        public virtual void highlightAll(bool on = true) { }
 
         public void objSelectionChangedListener(object sender,
             ObjSelectionChangedEventArgs e)
         {
             if (sender == this)
                 return;
-
-
         }
         public event EventHandler<DrawingGraphicsChangedEventArgs>
             drawingGraphicsChangedTrigger;
@@ -92,13 +86,13 @@ namespace iS3.Control
         #endregion
 
 
-        U3DPlayerAxLib.U3DPlayerControl _u3dPlayerControl;
+        //U3DPlayerAxLib.U3DPlayerControl _u3dPlayerControl;
 
-        public IS3View3D(UserControl parent,
-            U3DPlayerAxLib.U3DPlayerControl u3dPlayerControl)
+        public IS3View3D(UserControl parent
+           /* U3DPlayerAxLib.U3DPlayerControl u3dPlayerControl*/)
         {
             _parent = parent;
-            _u3dPlayerControl = u3dPlayerControl;
+            //_u3dPlayerControl = u3dPlayerControl;
         }
         public bool IsValidFileName(string filename)
         {
@@ -152,11 +146,14 @@ namespace iS3.Control
                                 int id = int.Parse(_path.Split('/')[_path.Split('/').Length - 1]);
                                 string layer3d = _path.Substring(0, _path.Length - 1 - (id).ToString().Length);
                                 bool isSelected = _message.iSSelected;
-                                foreach (DGObjects objs in prj.Get3dRelatedObjs(layer3d))
+                                if (prj.objs3DIndex.ContainsKey(layer3d))
                                 {
-                                    ShowSelect(objs, id, isSelected);
-                                }
+                                    foreach (DGObjects objs in prj.objs3DIndex[layer3d])
+                                    {
+                                        ShowSelect(objs,id, isSelected);
+                                    }
   
+                                }
                                 break;
                             case MessageType.SetObjShowState:
                                 break;
@@ -175,7 +172,10 @@ namespace iS3.Control
             {
                 List<DGObject> addedObjs = new List<DGObject>();
                 List<DGObject> removedObjs = new List<DGObject>();
-                DGObject obj = await objs.QueryObjByID(id);
+                DGObjectRepository repository = DGObjectRepository.Instance(
+                                     Globals.project.projDef.ID, objs.parent.name, objs.definition.Type);
+                DGObject obj = await repository.Retrieve(id);
+                obj.parent = objs;
                 addedObjs.Add(obj);
                 if (lastOne != null)
                 {
@@ -333,11 +333,6 @@ namespace iS3.Control
         public void objSelectionChangedListenerInner(object sender, ObjSelectionChangedEventArgs e)
         {
            
-        }
-
-        public int syncObjects()
-        {
-            return 0;
         }
 
 

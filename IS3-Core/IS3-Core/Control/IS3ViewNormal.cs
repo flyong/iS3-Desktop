@@ -121,5 +121,10 @@ namespace iS3.Core
                     objSelectionChangedTriggerOuter(sender, e);
             }
         }
+
+        public int syncObjects()
+        {
+            return 0;
+        }
     }
 }

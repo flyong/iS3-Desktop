@@ -9,7 +9,6 @@
     <Grid>
         <WindowsFormsHost>
             <u3d:U3DPlayerControl x:Name="u3dPlayerControl" />
-
         </WindowsFormsHost>
     </Grid>
 </UserControl>

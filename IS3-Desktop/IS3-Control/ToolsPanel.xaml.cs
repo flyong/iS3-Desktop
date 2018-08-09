@@ -42,7 +42,7 @@ namespace iS3.Control
     /// <summary>
     /// Interaction logic for ToolsPanel.xaml
     /// </summary>
-    public partial class ToolsPanel : UserControl
+    public partial class ToolsPanel : UserControl,IToolsPanel
     {
         public ToolTreeItem toolboxesTree { get; set; }
 
@@ -60,7 +60,14 @@ namespace iS3.Control
 
             ToolsTreeView.ItemsSource = root.items;
         }
-
+        public void init(List<ToolTreeItem> toolTreeList)
+        {
+            if (toolTreeList == null) return;
+            foreach (ToolTreeItem item in toolTreeList)
+            {
+                toolboxesTree.add(item);
+            }
+        }
         private void ToolsTreeView_MouseDoubleClick(object sender,
             MouseButtonEventArgs e)
         {

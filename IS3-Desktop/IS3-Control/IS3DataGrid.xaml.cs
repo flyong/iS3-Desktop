@@ -69,23 +69,16 @@ namespace iS3.Control
         }
         public async Task GetData(DGObjects objs)
         {
-            DGObjectRepository repository = DGObjectRepository.Instance(
-                 Globals.project.projDef.ID, objs.parent.name, objs.definition.Type);
-            List<DGObject> objList =await repository.GetAllByObjs(objs.GetFilter());
+            List<DGObject> objList = await objs.QueryAllByObjs();
 
-            foreach (DGObject obj in objList)
-            {
-                obj.parent = objs;
-            }
             string domain = objs.parent.name;
             string objtype = objs.definition.Type;
 
             //获取对应属性数据
-            iS3Property property = new iS3Property();
-            Type objType = iS3Property.GetType(objs.parent.name, objs.definition.Type);
-            Type _t = property.GetType();
+            Type objType = ObjectHelper.GetType(objs.parent.name, objs.definition.Type);
+            Type _t = typeof(ObjectHelper);
             MethodInfo mi = _t.GetMethod("Convert").MakeGenericMethod(objType);
-            DGObjectDataGrid.ItemsSource = mi.Invoke(property, new object[] { objList }) as IEnumerable;
+            DGObjectDataGrid.ItemsSource = mi.Invoke(null, new object[] { objList }) as IEnumerable;
 
         }
 

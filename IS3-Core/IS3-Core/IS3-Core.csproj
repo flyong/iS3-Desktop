@@ -81,15 +81,15 @@
     <Compile Include="Control\IProjectList.cs" />
     <Compile Include="Control\IS3PageHolder.cs" />
     <Compile Include="Control\IS3RuntimeControl.cs" />
+    <Compile Include="Control\IToolsPanel.cs" />
     <Compile Include="Control\IView2D.cs" />
     <Compile Include="Control\IView3D.cs" />
     <Compile Include="Control\IPageTransition.cs" />
     <Compile Include="Core.cs" />
     <Compile Include="Control\IS3ViewNormal.cs" />
-    <Compile Include="DllImport.cs" />
+    <Compile Include="ExtensionManager.cs" />
     <Compile Include="FTP.cs" />
-    <Compile Include="iS3Property.cs" />
-    <Compile Include="MessageConverter.cs" />
+    <Compile Include="Converter\MessageConverter.cs" />
     <Compile Include="Models\AuthLogin.cs" />
     <Compile Include="Models\DGObject.cs" />
     <Compile Include="Models\DGObjects.cs" />
@@ -107,7 +107,6 @@
     <Compile Include="Graphics\RendererInterface.cs" />
     <Compile Include="Graphics\SymbolDef.cs" />
     <Compile Include="Models\UserLogin.cs" />
-    <Compile Include="ReflectionConvertHelper.cs" />
     <Compile Include="Repository\IRepository.cs" />
     <Compile Include="Models\Project.cs" />
     <Compile Include="Repository\RepositoryForDGObjects.cs" />
@@ -130,7 +129,6 @@
     <Compile Include="Tools.cs" />
     <Compile Include="Models\Tree.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UIDesigns.cs" />
     <Compile Include="Control\View.cs" />
   </ItemGroup>
   <ItemGroup>

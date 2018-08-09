@@ -13,12 +13,10 @@ using System.Windows.Media;
 using System.Reflection;
 
 using iS3.Core;
-//using iS3.Core.Serialization;
 using iS3.ArcGIS.Graphics;
 using iS3.ArcGIS.Geometry;
 
 using iS3.Desktop.Properties;
-//using Telerik.Windows.Controls;
 using System.Xml.Linq;
 
 namespace iS3.Desktop

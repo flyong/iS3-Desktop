@@ -82,10 +82,10 @@ namespace iS3.ArcGIS.Graphics
         //// Summary:
         ////      Sync graphic with objects based on the following condition:
         ////          graphic.Attribute["Name"] = obj.Name
-        //public int syncObjects(DGObjects objs)
-        //{
-        //    return syncObjects(objs.values);
-        //}
+        public int syncObjects(DGObjects objs)
+        {
+            return syncObjects(objs.objContainer);
+        }
         public int syncObjects(IEnumerable<DGObject> objs)
         {
             if (objs == null)
@@ -151,26 +151,37 @@ namespace iS3.ArcGIS.Graphics
 
         public IGraphicCollection getGraphics(DGObject obj)
         {
-            ///
-            IGraphicCollection _graphics = new IS3GraphicCollection();
-            foreach (IGraphic g in graphics)
+            /////
+            //IGraphicCollection _graphics = new IS3GraphicCollection();
+            //foreach (IGraphic g in graphics)
+            //{
+            //    if (g.Attributes.ContainsKey("Name"))
+            //    {
+            //        string name = g.Attributes["Name"] as string;
+            //        if (name == obj.name)
+            //        {
+            //            _graphics.Add( g);
+            //        }
+            //    }
+            //}
+            //return _graphics;
+
+            //use old one
+            if (_obj2Graphics == null)
+                return null;
+
+            //since the query DGObject is not same as saved 
+            //we just use unique id to related
+            DGObject refObj = _obj2Graphics.Keys.Where(x => x.id == obj.id).FirstOrDefault();
+            if (refObj!=null)
             {
-                if (g.Attributes.ContainsKey("Name"))
-                {
-                    string name = g.Attributes["Name"] as string;
-                    if (name == obj.name)
-                    {
-                        _graphics.Add( g);
-                    }
-                }
+                return _obj2Graphics[refObj];
             }
-            return _graphics;
-            //if (_obj2Graphics == null)
-            //    return null;
-            //if (_obj2Graphics.ContainsKey(obj))
-            //    return _obj2Graphics[obj];
-            //else
-            //    return null;
+            else
+            {
+                return null;
+
+            }
         }
 
         public DGObject getObject(string graphicName)
@@ -295,28 +306,28 @@ namespace iS3.ArcGIS.Graphics
         public int highlightObject(DGObject obj, bool on = true)
         {
             int count = 0;
-            foreach (IGraphic g in graphics)
-            {
-                if (g.Attributes.ContainsKey("Name"))
-                {
-                    string name = g.Attributes["Name"] as string;
-                    if (name == obj.name)
-                    {
-                        if (g.IsSelected != on)
-                            g.IsSelected = on;
-                    }
-                }
-            }
-            //if (_obj2Graphics != null &&
-            //    _obj2Graphics.ContainsKey(GetObjByID(obj.id)))
+            //foreach (IGraphic g in graphics)
             //{
-            //    IGraphicCollection gc = _obj2Graphics[GetObjByID(obj.id)];
-            //    foreach (IGraphic g in gc)
+            //    if (g.Attributes.ContainsKey("Name"))
             //    {
-            //        if (g.IsSelected != on)
-            //            g.IsSelected = on;
+            //        string name = g.Attributes["Name"] as string;
+            //        if (name == obj.name)
+            //        {
+            //            if (g.IsSelected != on)
+            //                g.IsSelected = on;
+            //        }
             //    }
             //}
+            if (_obj2Graphics != null &&
+                _obj2Graphics.ContainsKey(GetObjByID(obj.id)))
+            {
+                IGraphicCollection gc = _obj2Graphics[GetObjByID(obj.id)];
+                foreach (IGraphic g in gc)
+                {
+                    if (g.IsSelected != on)
+                        g.IsSelected = on;
+                }
+            }
             return count;
 
             //int count = 0;
@@ -372,9 +383,5 @@ namespace iS3.ArcGIS.Graphics
                 addGraphic(g);
         }
 
-        public int syncObjects(DGObjects objs)
-        {
-            return 0;
-        }
     }
 }

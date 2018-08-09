@@ -93,7 +93,7 @@ namespace iS3.Core
             //网络请求 
             string result = await Task.Run(() =>
                WebApiCaller.HttpGet(ServiceConfig.BaseURL +
-               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,iS3.Core.MessageConverter.EnCode(filter))));
+               string.Format(ServiceConfig.DGObjectListFormat, domainType.ToLower(), dgobjectName.ToLower(), projectID,iS3.Core.APIMessageConverter.EnCode(filter))));
             //
             JObject obj = JObject.Parse(result);
             string data = obj["data"].ToString();

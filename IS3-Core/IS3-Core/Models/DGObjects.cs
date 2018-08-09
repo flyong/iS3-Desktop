@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Xml.Linq;
 using System.Data;
+using System.Threading.Tasks;
 
 //using iS3.Core.Serialization;
 
@@ -109,20 +110,13 @@ namespace iS3.Core
     //
     public class DGObjects
     {
-        public DGObjects() { }
-        //// Summary:
-        ////     Object dictionay
-        //// Remarks:
-        ////     Object name is used as the key
-        //public Dictionary<string, DGObject> _objs;
-        //// Summary:
-        ////     id index to object
-        //public Dictionary<int, DGObject> _id2Obj { get; set; }
 
         // Parent of the objects
         public Domain parent { get; set; }
         // Objects definition
         public DGObjectsDefinition definition { get; set; }
+
+        public List<DGObject> objContainer { get; set; }
 
         public string filter { get; set; }
 
@@ -137,60 +131,36 @@ namespace iS3.Core
         //     Constructors
         public DGObjects(DGObjectsDefinition def)
         {
-            //_objs = new Dictionary<string, DGObject>();
-
             definition = def;
         }
 
-        ////// Summary:
-        //////     Get object by a key
-        ////public DGObject this[string key]
-        ////{
-        ////    get { return _objs[key]; }
-        ////    set { _objs[key] = value; value.parent = this; }
-        ////}
+        // Summary:
+        //     Get object by a key
+        public async Task<DGObject> QueryObjByID(int objID)
+        {
+            DGObjectRepository repository = DGObjectRepository.Instance(
+                     Globals.project.projDef.ID,parent.name, definition.Type);
+            DGObject obj = await repository.Retrieve(objID);
+            obj.parent = this;
+            return obj;
+        }
 
-        //// Summary:
-        ////     Get object by an id
-        //public DGObject this[int id]
-        //{
-        //    get { return _id2Obj[id]; }
-        //}
+        public async Task<List<DGObject>> QueryAllByObjs()
+        {
+            DGObjectRepository repository = DGObjectRepository.Instance(
+         Globals.project.projDef.ID, parent.name, definition.Type);
+            List<DGObject> list= await repository.GetAllByObjs(GetFilter());
+            list.ForEach(x => x.parent = this);
+            return list;
+        }
 
-        //public Dictionary<string, DGObject>.ValueCollection values
-        //{
-        //    get { return _objs.Values; }
-        //}
-
-        //public bool containsKey(string key)
-        //{
-        //    return _objs.ContainsKey(key);
-        //}
-
-        //public bool containsKey(int objID)
-        //{
-        //    return _id2Obj.ContainsKey(objID);
-        //}
-
-        //public int count
-        //{
-        //    get { return _objs.Count; }
-        //}
-
-        //public override string ToString()
-        //{
-        //    String str = string.Format("Objs: Type={0}, Count={1}, ",
-        //        definition==null? null : definition.Type, _objs.Count);
-
-        //    ICollection<string> keys = _objs.Keys;
-        //    string strKeys = "Keys=";
-        //    foreach (string key in keys)
-        //    {
-        //        strKeys += key + ",";
-        //    }
-
-        //    str += strKeys;
-        //    return str;
-        //}
+        public async Task<List<DGObject>> QueryAll()
+        {
+            DGObjectRepository repository = DGObjectRepository.Instance(
+         Globals.project.projDef.ID, parent.name, definition.Type);
+            List<DGObject> list = await repository.GetAllAsync();
+            list.ForEach(x => x.parent = this);
+            return list;
+        }
     }
 }

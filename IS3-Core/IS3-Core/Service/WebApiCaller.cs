@@ -13,12 +13,24 @@ namespace iS3.Core.Service
     {
         public static string HttpPost(string url, string body)
         {
+            return CommonHttp(url, "POST", body);
+        }
+        public static string HttpPut(string url, string body)
+        {
+            return CommonHttp(url, "PUT", body);
+        }
+        public static string HttpDelete(string url, string body)
+        {
+            return CommonHttp(url, "DELETE", body);
+        }
+        public static string CommonHttp(string url, string operation,string body)
+        {
             try
             {
                 //ServicePointManager.ServerCertificateValidationCallback = new RemoteCertificateValidationCallback(CheckValidationResult);
                 Encoding encoding = Encoding.UTF8;
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
-                request.Method = "POST";
+                request.Method = operation;
                 request.Accept = "application/json, text/javascript, */*"; //"text/html, application/xhtml+xml, */*";
                 request.ContentType = "application/json; charset=utf-8";
 

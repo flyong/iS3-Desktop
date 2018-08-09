@@ -225,10 +225,7 @@ namespace iS3.Control
                     List<DGObject> detailObjList = new List<DGObject>();
                     foreach (DGObject _obj in objlist)
                     {
-                        DGObjectRepository repository = DGObjectRepository.Instance(
-                                           Globals.project.projDef.ID, _obj.parent.parent.name, _obj.parent.definition.Type);
-                        DGObject obj = await repository.Retrieve(_obj.id);
-                        obj.parent = dGObjects;
+                        DGObject obj = await dGObjects.QueryObjByID(_obj.id);
                         detailObjList.Add(obj);
                     }
                     selectedObjsDict[key] = detailObjList.AsEnumerable();

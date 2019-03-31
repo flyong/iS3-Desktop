@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2020
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iS3-Desktop", "IS3-Desktop\iS3-Desktop.csproj", "{27E8435C-B314-434A-BB39-57CB53AC3A09}"
 EndProject
@@ -18,6 +18,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "iS3-SimpleGeologyTools", "..\IS3-Tools\IS3-SimpleGeologyTools\iS3-SimpleGeologyTools.csproj", "{F4929EFD-50C6-4BF9-8B13-4F11EC9B54CA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityCore", "..\UnityCore\UnityCore\UnityCore\UnityCore.csproj", "{AC9A8886-A523-44B8-B10F-430627F9A123}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IS3-Python", "..\IS3-Python\IS3-Python\IS3-Python.csproj", "{E6F7F4AD-0E87-45D7-BD80-D66C99379692}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -125,6 +127,18 @@ Global
 		{AC9A8886-A523-44B8-B10F-430627F9A123}.Release|x64.Build.0 = Release|Any CPU
 		{AC9A8886-A523-44B8-B10F-430627F9A123}.Release|x86.ActiveCfg = Release|Any CPU
 		{AC9A8886-A523-44B8-B10F-430627F9A123}.Release|x86.Build.0 = Release|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Debug|x64.Build.0 = Debug|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Debug|x86.Build.0 = Debug|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Release|x64.ActiveCfg = Release|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Release|x64.Build.0 = Release|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Release|x86.ActiveCfg = Release|Any CPU
+		{E6F7F4AD-0E87-45D7-BD80-D66C99379692}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
